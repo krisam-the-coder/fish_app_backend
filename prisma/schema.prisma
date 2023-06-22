@@ -16,14 +16,13 @@ model admin {
   password String
 }
 
-model user{
-  id       String @id @default(uuid())
-  userName String
-  password String
+model user {
+  id          String  @id @default(uuid())
+  userName    String
+  password    String
   phoneNumber String
-  farmer farmer?
-  buyer buyer?
-
+  farmer      farmer?
+  buyer       buyer?
 }
 
 model farmer {
@@ -31,64 +30,63 @@ model farmer {
   profiilePicture String
   farmName        String
   pondSize        Int
-  fiscalYear      String
+  fiscalYear      DateTime @updatedAt
   active          Boolean
   approved        Boolean
-  user user @relation(fields: [userId],references: [id])
-  userId String @unique
-  location location?
-  buyerRequest    buyerRequest                 @relation(fields: [buyerRequestId], references: [id])
-  buyerRequestId  String                       @unique
+  user            user                         @relation(fields: [userId], references: [id])
+  userId          String                       @unique
+  location        location                     @relation(fields: [locationId], references: [id])
+  locationId      String                       @unique
+  buyerRequest    buyerRequest?                @relation(fields: [buyerRequestId], references: [id])
+  buyerRequestId  String?                      @unique
   farmerDocument  documentForFarmer?
   issues          helpAndSupportFarmerIssues[]
-  farmerSupply     farmerSupply[]
+  farmerSupply    farmerSupply[]
 }
 
-model location{
-  id               String                      @id @default(uuid())
-   pradesh         String
-  district        String
-  nagarpalika    String?
+model location {
+  id                 String  @id @default(uuid())
+  pradesh            String
+  district           String
+  nagarpalika        String?
   mahaNagarpalika    String?
   upaMahaNagarpalika String?
-  gaupalika           String?
-  Woda            Int
-  farmer farmer @relation(fields: [farmerId],references: [id])
-  farmerId String @unique
-  buyer buyer @relation(fields: [buyerId],references: [id])
-  buyerId String @unique
+  gaupalika          String?
+  Woda               Int
+  buyer              buyer? 
+  farmer             farmer?
 }
 
 model buyer {
   id               String                      @id @default(uuid())
   organizationName String? //optional
   profiilePicture  String
-  fiscalYear       String
+  fiscalYear      DateTime @updatedAt
   active           Boolean
   approved         Boolean
-   user user @relation(fields: [userId],references: [id])
-  userId String @unique
+  user             user                        @relation(fields: [userId], references: [id])
+  userId           String                      @unique
   issues           helpAndSupportBuyerIssues[]
   buyerProposal    buyerRequest[]
-    location location?
-    buyerForm buyerForm?
+  location         location @relation(fields: [locationId],references: [id])
+  locationId String @unique
+  buyerForm        buyerForm?
 }
 
 model documentForFarmer {
-  id             String @id @default(uuid())
+  id           String   @id @default(uuid())
   idenfication String[]
   registration String[]
-  farmerId       String @unique
-  farmer         farmer @relation(fields: [farmerId], references: [id])
+  farmerId     String   @unique
+  farmer       farmer   @relation(fields: [farmerId], references: [id])
 }
-
 
 model helpAndSupportFarmerIssues {
   id       String   @id @default(uuid())
   issue    String
   time     DateTime @updatedAt //what is the time at the time of publishment
   farmerId String?  @unique
-  farmer   farmer?  @relation(fields: [farmerId], references: [id]) 
+  farmer   farmer?  @relation(fields: [farmerId], references: [id])
 }
 
 model helpAndSupportBuyerIssues {
@@ -97,43 +95,42 @@ model helpAndSupportBuyerIssues {
   time    DateTime @updatedAt //what is the time at the time of publishment   
   buyerId String?  @unique
   buyer   buyer?   @relation(fields: [buyerId], references: [id])
-
 }
 
 model farmerSupply {
-  id          String   @id @default(uuid())
-  fishType String
-  avgWeight Int
+  id           String     @id @default(uuid())
+  fishType     String
+  avgWeight    Int
   requiredDate DateTime
-  location  String
-  contact String
-  totalWeight Int 
-  time        DateTime @updatedAt
-  farmer      farmer   @relation(fields: [farmerId], references: [id])
-  farmerId    String   @unique
-buyerForm buyerForm?
+  location     String
+  contact      String
+  totalWeight  Int
+  time         DateTime   @updatedAt
+  farmer       farmer     @relation(fields: [farmerId], references: [id])
+  farmerId     String     @unique
+  buyerForm    buyerForm?
 }
 
 model buyerRequest {
-  id          String   @id @default(uuid())
-  time        DateTime @updatedAt
-  fishType String
-  avgWeight Int
+  id           String   @id @default(uuid())
+  time         DateTime @updatedAt
+  fishType     String
+  avgWeight    Int
   requiredDate DateTime
-  location  String
-  contact String
-  totalWeight Int 
-  buyer       buyer    @relation(fields: [buyerId], references: [id])
-  buyerId     String   @unique
-  farmer      farmer[]
+  location     String
+  contact      String
+  totalWeight  Int
+  buyer        buyer    @relation(fields: [buyerId], references: [id])
+  buyerId      String   @unique
+  farmer       farmer[]
 }
 
-model buyerForm{
-    id          String   @id @default(uuid())
-    quantity Int
-    contact String
-    farmerSupply farmerSupply @relation(fields: [farmerSupplyId], references: [id])
-    farmerSupplyId String @unique
-    buyer buyer @relation(fields: [buyerId], references: [id])
-    buyerId String @unique
+model buyerForm {
+  id             String       @id @default(uuid())
+  quantity       Int
+  contact        String
+  farmerSupply   farmerSupply @relation(fields: [farmerSupplyId], references: [id])
+  farmerSupplyId String       @unique
+  buyer          buyer        @relation(fields: [buyerId], references: [id])
+  buyerId        String       @unique
 }
