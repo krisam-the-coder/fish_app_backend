@@ -10,21 +10,29 @@ export const userRouter = express.Router();
 
 // To Register A New User 
 
-userRouter.post('/register', async (request: Request, response: Response) => {
-
+userRouter.post('/register', body("userName").isString(), body("phoneNumber").isString(), body("password").isString(), async (request: Request, response: Response) => {
+    const error = validationResult(request)
+    if (!error.isEmpty()) {
+        return response.status(400).json({ error: error.array() })
+    }
     try {
         const registerUser = await UserService.createUser(request.body)
-        return response.status(200).json(registerUser)
+        return response.status(201).json(registerUser)
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
 
-userRouter.post('/login', async (request: Request, response: Response) => {
+userRouter.post('/login', body("phoneNumber").isString(), body("password").isString(), async (request: Request, response: Response) => {
+
+    const error = validationResult(request)
+    if (!error.isEmpty()) {
+        return response.status(400).json({ error: error.array() })
+    }
 
     try {
-        const logIN = await UserService.login(request.body)
-        return response.status(200).json(logIN)
+        const login = await UserService.login(request.body)
+        return response.status(200).json(login)
     } catch (error: any) {
         return response.status(500).json(error.message)
     }

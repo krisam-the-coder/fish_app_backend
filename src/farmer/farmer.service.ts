@@ -13,13 +13,21 @@ type Farmer = {
 
 export const getFarmers = async (): Promise<Farmer[] | null> => {
 
-    try {
-
-        return db.farmer.findMany({ where: { active: true, approved: true }, include: { location: { select: { pradesh: true, district: true, mahaNagarpalika: true, upaMahaNagarpalika: true, gaupalika: true,nagarpalika:true } } } })
-
-    } catch (error) {
-
-    }
+    return db.farmer.findMany({
+        where:
+            { active: true, approved: true },
+        include: {
+            location:
+            {
+                select:
+                {
+                    pradesh: true, district: true, mahaNagarpalika: true,
+                    upaMahaNagarpalika: true, gaupalika: true,
+                    nagarpalika: true
+                }
+            }
+        }
+    })
 
     return null
 }
@@ -47,7 +55,7 @@ export const createFarmer = async (data: any): Promise<Farmer | string> => {
     })
 
     if (Farmer && Location) {
-        return Farmer
+        return "New Farmer added Successfullyr"
     } else {
         return "Unable to create Farmer"
     }
@@ -55,5 +63,24 @@ export const createFarmer = async (data: any): Promise<Farmer | string> => {
 
 
 
+export const getFarmer = async (id: string): Promise<Farmer | null> => {
 
+    return db.farmer.findUnique(
+        {
+            where: { id },
+            include: {
+                location:
+                {
+                    select:
+                    {
+                        pradesh: true, district: true, mahaNagarpalika: true,
+                        upaMahaNagarpalika: true, gaupalika: true,
+                        nagarpalika: true
+                    }
+                }
+            }
+        }
+    )
+
+}
 

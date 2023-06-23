@@ -26,12 +26,10 @@ type Session = {
 }
 
 
-export const createUser = async (data: User): Promise<string | null> => {
+export const createUser = async (data: User): Promise<string> => {
     const existingUser = await db.user.findUnique({ where: { userName: data.userName } });
     const existingNumber = await db.user.findUnique({ where: { phoneNumber: data.phoneNumber } });
     const hashPassword = await hash(data.password, 12)
-
-
 
     if (existingUser) {
         return "Username already exists";
@@ -40,48 +38,42 @@ export const createUser = async (data: User): Promise<string | null> => {
     if (existingNumber) {
         return "Phone Number already exists";
     }
-    const register = await db.user.create({
+
+    await db.user.create({
         data: {
             userName: data.userName,
             password: hashPassword,
             phoneNumber: data.phoneNumber
         }
     })
+    return "Account has been Created Successfully"
 
-    if (register) {
-        return "Account has been Created Successfully"
-    }
 
-    return null
 }
 
 
 
-export const login = async (data: User): Promise<Session | null | string> => {
-    try {
-        const { phoneNumber, password } = data;
-        const userData = await db.user.findUnique({ where: { phoneNumber } });
+export const login = async (data: User): Promise<Session | string> => {
+    const { phoneNumber, password } = data;
+    const userData = await db.user.findUnique({ where: { phoneNumber } });
 
-        if (userData) {
-            const isPasswordValid = await compare(password, userData.password);
+    if (userData) {
+        const isPasswordValid = await compare(password, userData.password);
 
-            if (!isPasswordValid) {
-                return "Invalid Password!";
-            }
-
-            const token = jwt.sign({ userName: userData.userName }, SECRET_KEY);
-            const sessionToken: Session = {
-                session_token: token,
-                id: userData.id,
-                userName: userData.userName,
-            };
-
-            return sessionToken;
-        } else {
-            return "Incorect Phone Number"; // User not found
+        if (!isPasswordValid) {
+            return "Invalid Password!";
         }
-    } catch (error) {
-        console.log(error);
-        return "An error occurred"; // Handle any potential errors
+
+        const token = jwt.sign({ userName: userData.userName }, SECRET_KEY);
+        const sessionToken: Session = {
+            session_token: token,
+            id: userData.id,
+            userName: userData.userName,
+        };
+
+        return sessionToken;
+    } else {
+        return "Incorect Phone Number"; // User not found
     }
+
 };
