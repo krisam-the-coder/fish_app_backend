@@ -30,7 +30,7 @@ model Farmer {
   id              String    @id @default(uuid())
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String    @unique
-  profiilePicture String
+  profilePicture String
   farmName        String
   pondSize        Int
   fiscalYear      DateTime  @updatedAt
