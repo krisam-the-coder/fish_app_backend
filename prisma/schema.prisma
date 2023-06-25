@@ -12,47 +12,50 @@ datasource db {
 
 model Admin {
   id       String @id @default(uuid())
-  userName String 
+  userName String
   password String
 }
 
 model User {
   id          String  @id @default(uuid())
-  userName    String @unique
+  userName    String  @unique
   password    String
-  phoneNumber String @unique
+  phoneNumber String  @unique
   Farmer      Farmer?
   Buyer       Buyer?
 }
 
-
 model Farmer {
-  id              String    @id @default(uuid())
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String    @unique
+  id             String         @id @default(uuid())
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String         @unique
   profilePicture String
-  farmName        String
-  pondSize        Int
-  fiscalYear      DateTime  @updatedAt
-  active          Boolean
-  approved        Boolean
-  location        Location?
-  Document        Document?
-  Issues          Issues?
+  farmName       String
+  pondSize       Int
+  fiscalYear     DateTime       @updatedAt
+  active         Boolean
+  approved       Boolean
+  location       Location?
+  Document       Document?
+  Issues         Issues?
+  farmerSupply   FarmerSupply[]
+  FarmerRequest  FarmerRequest?
 }
 
 model Buyer {
-  id               String    @id @default(uuid())
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String    @unique
+  id               String        @id @default(uuid())
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String        @unique
   location         Location?
   organizationName String? //optional
-  profiilePicture  String
-  fiscalYear       DateTime  @updatedAt
+  profilePicture   String
+  fiscalYear       DateTime      @updatedAt
   active           Boolean
   approved         Boolean
   Document         Document?
   Issues           Issues?
+  buyerDemand      BuyerDemand[]
+  BuyerRequest     BuyerRequest?
 }
 
 model Location {
@@ -90,4 +93,47 @@ model Issues {
   time     DateTime @updatedAt
 }
 
+model FarmerSupply {
+  id            String         @id @default(uuid())
+  farmer        Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  farmerId      String         @unique
+  fishType      String
+  avgFishWeight Int
+  totalWeight   Int
+  yieldDate     DateTime
+  BuyerRequest  BuyerRequest[]
+}
 
+model BuyerDemand {
+  id            String         @id @default(uuid())
+  Buyer         Buyer          @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId       String         @unique
+  fishType      String
+  avgFishWeight Int
+  totalWeight   Int
+  deadline      DateTime //yeti bela samma chahiyo malie
+  yieldDate     DateTime       @updatedAt
+  FarmerRequest FarmerRequest[]
+}
+
+
+//buyer listing page
+model BuyerRequest {
+  id             String       @id @default(uuid())
+  farmerSupply   FarmerSupply @relation(fields: [farmerSupplyId], references: [id], onDelete: Cascade)
+  farmerSupplyId String       @unique
+  Buyer          Buyer        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId        String       @unique
+  isApproved     Boolean
+}
+
+
+//farmer listing page
+model FarmerRequest {
+  id            String      @id @default(uuid())
+  buyerDemand   BuyerDemand @relation(fields: [buyerDemandId], references: [id], onDelete: Cascade)
+  buyerDemandId String      @unique
+  farmer        Farmer      @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  farmerId      String      @unique
+  isApproved    Boolean
+}
