@@ -140,18 +140,27 @@ export const acceptFarmerRequest = async (id: string): Promise<string> => {
 };
 
 
-export const inActivateFarmer = async (id: string): Promise< string> => {
-
-    const inActivatedFarmer = await db.farmer.update({
-        where: {
-            id
-        },
-        data: {
-            active: false
-        }
+export const inActivateFarmer = async (id: string): Promise<string> => {
+    const isActive = await db.farmer.findUnique({
+        where: { id }
     })
 
-    return "Farmer inactivated successfully!";
+
+    // isActive && (
+
+        db.farmer.update({
+            where: {
+                id
+            },
+            data: {
+                approved: false
+            }
+        })
+
+    // )
+
+    return isActive?.active ? 'Farmer inactivated successfully' : 'Farmer activated successfully'
+
 }
 
 export const getFarmerRequests = async (): Promise<Farmer[]> => {

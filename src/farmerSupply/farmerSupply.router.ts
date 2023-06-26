@@ -56,3 +56,14 @@ farmerSupplyRouter.patch('/:id', async (request: Request, response: Response) =>
 })
 
 
+// to get all the farmer supply
+farmerSupplyRouter.get('/', async (request: Request, response: Response) => {
+    try {
+        const getFarmerSupplies = await FarmerService.getFarmerSupplies()
+        return response.status(201).json(getFarmerSupplies)
+
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+

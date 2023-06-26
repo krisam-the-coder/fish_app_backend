@@ -93,8 +93,8 @@ FarmerRouter.patch("/request/:id", async (request: Request, response: Response) 
 FarmerRouter.patch('/:id', async (request: Request, response: Response) => {
     const { id } = request.params
     try {
-        const inActiveFarmer = await FarmerService.inActivateFarmer(id)
-        return response.status(200).json(inActiveFarmer)
+        const inActivateFarmer = await FarmerService.inActivateFarmer(id)
+        return response.status(200).json(inActivateFarmer)
 
     } catch (error: any) {
         return response.status(500).json(error.message)

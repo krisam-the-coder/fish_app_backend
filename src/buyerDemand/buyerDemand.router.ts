@@ -1,6 +1,5 @@
 import express, { request } from "express"
 import { Request, Response } from "express"
-import { body, validationResult } from "express-validator"
 
 import * as buyerService from "./buyerDemand.service"
 

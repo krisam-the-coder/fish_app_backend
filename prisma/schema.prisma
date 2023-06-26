@@ -47,7 +47,7 @@ model Buyer {
   user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String        @unique
   location         Location?
-  organizationName String? //optional
+  organizationName String
   profilePicture   String
   fiscalYear       DateTime      @updatedAt
   active           Boolean
@@ -124,7 +124,9 @@ model BuyerRequest {
   farmerSupplyId String       @unique
   Buyer          Buyer        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   buyerId        String       @unique
+  requestWeight String
   isApproved     Boolean
+  phoneNumber Int
 }
 
 
@@ -136,4 +138,6 @@ model FarmerRequest {
   farmer        Farmer      @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   farmerId      String      @unique
   isApproved    Boolean
+  supplyWeight String
+    phoneNumber Int
 }

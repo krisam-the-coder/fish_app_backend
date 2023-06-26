@@ -6,19 +6,9 @@ import * as buyerService from "./buyer.service"
 
 export const buyerRouter = express.Router()
 
-// To create buyer Request
-buyerRouter.post('/request/', async (request: Request, response: Response) => {
-    try {
-        const buyer = await buyerService.createBuyer(request.body)
-        return response.status(201).json(buyer)
-
-    } catch (error: any) {
-        return response.status(500).json(error.message)
-    }
-})
 
 
-// to get all farmers
+// to get all buyers
 buyerRouter.get('/', async (request: Request, response: Response) => {
 
     try {
@@ -29,72 +19,92 @@ buyerRouter.get('/', async (request: Request, response: Response) => {
         return response.status(500).json(error.message)
     }
 })
-// to get all farmers Requests
-FarmerRouter.get('/request', async (request: Request, response: Response) => {
 
+
+
+// To create buyer Request
+buyerRouter.post('/request/', async (request: Request, response: Response) => {
     try {
-        const getFarmerRequests = await FarmerService.getFarmerRequests()
-        return response.status(200).json(getFarmerRequests)
+        const createBuyerRequest = await buyerService.createBuyerRequest(request.body)
+        return response.status(201).json(createBuyerRequest)
 
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
 
-//For single Farmer
-FarmerRouter.get('/:id', async (request: Request, response: Response) => {
+
+
+//For single buyer
+buyerRouter.get('/:id', async (request: Request, response: Response) => {
 
     const { id } = request.params
     try {
-        const getFarmer = await FarmerService.getFarmer(id)
-        return response.status(200).json(getFarmer)
+        const getBuyer = await buyerService.getBuyer(id)
+        return response.status(200).json(getBuyer)
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
 
-//For single Farmer Request
-FarmerRouter.get('/request/:id', async (request: Request, response: Response) => {
-
-    const { id } = request.params
-    try {
-        const getSingleFarmerRequest = await FarmerService.getSingleFarmerRequest(id)
-        return response.status(200).json(getSingleFarmerRequest)
-    } catch (error: any) {
-        return response.status(500).json(error.message)
-    }
-})
 
 //To reject any farmer
-FarmerRouter.delete("/request/:id", async (request: Request, response: Response) => {
+buyerRouter.delete("/request/:id", async (request: Request, response: Response) => {
     const { id } = request.params
     try {
-        const deleteFarmerRequest = await FarmerService.rejectFarmerRequest(id)
-        return response.status(200).json(deleteFarmerRequest)
+        const deleteBuyerRequest = await buyerService.rejectBuyerRequest(id)
+        return response.status(200).json(deleteBuyerRequest)
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
 
-// to accept farmer request
-FarmerRouter.patch("/request/:id", async (request: Request, response: Response) => {
-    const { id } = request.params
+// to get all buyer Requests
+buyerRouter.get('/request', async (request: Request, response: Response) => {
+
     try {
-        const acceptFarmerRequest = await FarmerService.acceptFarmerRequest(id)
-        return response.status(200).json(acceptFarmerRequest)
+        const getBuyerRequests = await buyerService.getBuyerRequests()
+        return response.status(200).json(getBuyerRequests)
+
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
 
 
-//to inactive any farmer
+//For single Farmer Request
+buyerRouter.get('/request/:id', async (request: Request, response: Response) => {
 
-FarmerRouter.patch('/:id', async (request: Request, response: Response) => {
     const { id } = request.params
     try {
-        const inActiveFarmer = await FarmerService.inActivateFarmer(id)
-        return response.status(200).json(inActiveFarmer)
+        const getSingleBuyerRequest = await buyerService.getSingleBuyerRequest(id)
+        return response.status(200).json(getSingleBuyerRequest)
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
+
+
+// to accept buyer request
+buyerRouter.patch("/request/:id", async (request: Request, response: Response) => {
+    const { id } = request.params
+    try {
+        const acceptBuyerRequest = await buyerService.acceptBuyerRequest(id)
+        return response.status(200).json(acceptBuyerRequest)
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
+
+//to inactive any buyer
+
+buyerRouter.patch('/:id', async (request: Request, response: Response) => {
+    const { id } = request.params
+    try {
+        const inActivateBuyer = await buyerService.inActivateBuyer(id)
+        return response.status(200).json(inActivateBuyer)
 
     } catch (error: any) {
         return response.status(500).json(error.message)

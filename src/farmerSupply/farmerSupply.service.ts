@@ -52,13 +52,16 @@ export const updateFarmerSupply = async (data:any,id: string): Promise<FarmerSup
    
 }
 
-export const getFarmerSupply = async (id: string): Promise<FarmerSupply | null> => {
+export const getFarmerSupplies = async (): Promise<FarmerSupply[] | null> => {
+    const getFarmerSupplies =await db.farmerSupply.findMany({
+    })
+    return getFarmerSupplies;
+}
+export const getFarmerSupply= async (id:string): Promise<FarmerSupply | null> => {
     const getFarmerSupply =await db.farmerSupply.findUnique({
-     where:{
-        id
-     },
-
+        where:{
+            id
+        }
     })
     return getFarmerSupply;
-   
 }
