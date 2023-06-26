@@ -23,6 +23,7 @@ model User {
   phoneNumber String  @unique
   Farmer      Farmer?
   Buyer       Buyer?
+  Otp         Otp?
 }
 
 model Farmer {
@@ -105,17 +106,16 @@ model FarmerSupply {
 }
 
 model BuyerDemand {
-  id            String         @id @default(uuid())
-  Buyer         Buyer          @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  buyerId       String         @unique
+  id            String          @id @default(uuid())
+  Buyer         Buyer           @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId       String          @unique
   fishType      String
   avgFishWeight Int
   totalWeight   Int
   deadline      DateTime //yeti bela samma chahiyo malie
-  yieldDate     DateTime       @updatedAt
+  yieldDate     DateTime        @updatedAt
   FarmerRequest FarmerRequest[]
 }
-
 
 //buyer listing page
 model BuyerRequest {
@@ -124,11 +124,10 @@ model BuyerRequest {
   farmerSupplyId String       @unique
   Buyer          Buyer        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   buyerId        String       @unique
-  requestWeight String
+  requestWeight  String
   isApproved     Boolean
-  phoneNumber Int
+  phoneNumber    Int
 }
-
 
 //farmer listing page
 model FarmerRequest {
@@ -138,6 +137,17 @@ model FarmerRequest {
   farmer        Farmer      @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   farmerId      String      @unique
   isApproved    Boolean
-  supplyWeight String
-    phoneNumber Int
+  supplyWeight  String
+  phoneNumber   Int
+}
+
+// For OTP of Users
+
+model Otp {
+  id          String  @id @default(uuid())
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String  @unique
+  phoneNumber String
+  code        String
+  verified    Boolean
 }

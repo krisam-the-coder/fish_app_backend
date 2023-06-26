@@ -37,3 +37,54 @@ userRouter.post('/login', body("phoneNumber").isString(), body("password").isStr
         return response.status(500).json(error.message)
     }
 })
+
+
+userRouter.post('/get-otp', body("phoneNumber").isString(), async (request: Request, response: Response) => {
+
+    const error = validationResult(request)
+    if (!error.isEmpty()) {
+        return response.status(400).json({ error: error.array() })
+    }
+
+    try {
+        const getOtp = await UserService.otpSender(request.body.phoneNumber)
+        return response.status(200).json(getOtp)
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
+
+userRouter.post('/verify-code', body("code").isString(),body("userId").isString(), async (request: Request, response: Response) => {
+
+    const error = validationResult(request)
+    if (!error.isEmpty()) {
+        return response.status(400).json({ error: error.array() })
+    }
+
+    try {
+        const getVerify = await UserService.otpVerify(request.body)
+        return response.status(200).json(getVerify)
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
+
+userRouter.patch('/reset-password', body("password").isString(),body("id").isString(), async (request: Request, response: Response) => {
+
+    const error = validationResult(request)
+    if (!error.isEmpty()) {
+        return response.status(400).json({ error: error.array() })
+    }
+
+    try {
+        const passwordReset = await UserService.passwordReset(request.body)
+        return response.status(200).json(passwordReset)
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
+
+
