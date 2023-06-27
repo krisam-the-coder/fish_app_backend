@@ -10,6 +10,7 @@ import { BuyerRouter } from "./buyer/buyer.router"
 import { farmerSupplyRouter } from "./farmerSupply/farmerSupply.router"
 import { buyerDemandRouter } from "./buyerDemand/buyerDemand.router"
 import { buyerRequestRouter } from "./buyerRequest/buyerRequest.router"
+import { adminRouter } from "./admin/admin.router"
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use(express.json())
 
 
 app.use('/api/user', userRouter)
+app.use('/api/admin', adminRouter)
 app.use('/api/farmer', FarmerRouter)
 app.use('/api/buyer', BuyerRouter)
 app.use('/api/farmerSupply', farmerSupplyRouter)

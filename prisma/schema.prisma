@@ -13,7 +13,7 @@ datasource db {
 
 model Admin {
   id       String @id @default(uuid())
-  userName String
+  userName String @unique
   password String
 }
 
