@@ -102,16 +102,5 @@ FarmerRouter.patch('/:id', async (request: Request, response: Response) => {
 })
 
 
-//update farmers data
 
-// FarmerRouter.patch('/', async (request: Request, response: Response) => {
-//     const { id } = request.params
-//     try {
-//         const updateAnyDataOfFarmer = await FarmerService.updateAnyDataOfFarmer(request.body,id)
-//         return response.status(200).json(updateAnyDataOfFarmer)
-
-//     } catch (error: any) {
-//         return response.status(500).json(error.message)
-//     }
-// })
 

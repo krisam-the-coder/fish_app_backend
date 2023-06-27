@@ -5,6 +5,8 @@ import * as buyerRequest from "./buyerRequest.service"
 
 export const buyerRequestRouter = express.Router()
 
+
+
 buyerRequestRouter.post("/", async(request:Request,response:Response)=>{
     try{
         const createBuyerRequest=await buyerRequest.createBuyerRequest(request.body)

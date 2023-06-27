@@ -40,7 +40,7 @@ export const getFarmers = async (): Promise<Farmer[]> => {
 export const createFarmerRequest = async (data: any): Promise<Farmer | string> => {
     const {
         userId, farmName, profilePicture, pondSize, pradesh, district, nagarpalika,
-        Woda,idenfication,registration
+        Woda,idenfication,registration,mahaNagarpalika,upaMahaNagarpalika,gaupalika
 
     } = data
 
@@ -53,7 +53,7 @@ export const createFarmerRequest = async (data: any): Promise<Farmer | string> =
 
     const Location = await db.location.create({
         data: {
-            pradesh, district, nagarpalika, farmerId: Farmer.id, Woda
+            pradesh, district, nagarpalika, farmerId: Farmer.id, Woda, mahaNagarpalika, upaMahaNagarpalika, gaupalika
         }
     })
 
@@ -141,27 +141,23 @@ export const acceptFarmerRequest = async (id: string): Promise<string> => {
 
 
 export const inActivateFarmer = async (id: string): Promise<string> => {
-    const isActive = await db.farmer.findUnique({
-        where: { id }
-    })
+    const farmer = await db.farmer.findUnique({
+        where: { id },
+    });
 
+    if (!farmer) {
+        throw new Error("Farmer not found");
+    }
 
-    // isActive && (
+    const updatedFarmer = await db.farmer.update({
+        where: { id },
+        data: {
+            active: !farmer.active,
+        },
+    });
 
-        db.farmer.update({
-            where: {
-                id
-            },
-            data: {
-                approved: false
-            }
-        })
-
-    // )
-
-    return isActive?.active ? 'Farmer inactivated successfully' : 'Farmer activated successfully'
-
-}
+    return updatedFarmer.active ? 'Farmer activated successfully' : 'Farmer inactivated successfully';
+};
 
 export const getFarmerRequests = async (): Promise<Farmer[]> => {
 
