@@ -48,7 +48,7 @@ buyerRouter.get('/:id', async (request: Request, response: Response) => {
 })
 
 
-//To reject any farmer
+//To reject any buyer
 buyerRouter.delete("/request/:id", async (request: Request, response: Response) => {
     const { id } = request.params
     try {
@@ -61,6 +61,7 @@ buyerRouter.delete("/request/:id", async (request: Request, response: Response) 
 
 // to get all buyer Requests
 buyerRouter.get('/request', async (request: Request, response: Response) => {
+    console.log("Hello")
 
     try {
         const getBuyerRequests = await buyerService.getBuyerRequests()
@@ -72,7 +73,7 @@ buyerRouter.get('/request', async (request: Request, response: Response) => {
 })
 
 
-//For single Farmer Request
+//For single buyer Request
 buyerRouter.get('/request/:id', async (request: Request, response: Response) => {
 
     const { id } = request.params

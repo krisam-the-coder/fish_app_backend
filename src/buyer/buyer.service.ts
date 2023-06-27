@@ -39,10 +39,12 @@ export const getBuyers = async (): Promise<buyer[]> => {
 
 export const createBuyerRequest = async (data: any): Promise<buyer | string> => {
     const {
-        userId, organizationName, profilePicture,  pradesh, district, nagarpalika,
+        userId, organizationName, profilePicture,  pradesh, district, nagarpalika,upaMahaNagarpalika,gaupalika,mahaNagarpalika,
         Woda, idenfication, registration
 
-    } = data;
+    } =await data;
+
+
 
 
     const Buyer = await db.buyer.create({
@@ -53,7 +55,7 @@ export const createBuyerRequest = async (data: any): Promise<buyer | string> => 
 
     const Location = await db.location.create({
         data: {
-            pradesh, district, nagarpalika, farmerId: Buyer.id, Woda
+            pradesh, district, nagarpalika, buyerId: Buyer.id, Woda, mahaNagarpalika, gaupalika, upaMahaNagarpalika
         }
     })
 
@@ -117,9 +119,14 @@ export const rejectBuyerRequest = async (id: string): Promise<string> => {
 };
 export const getBuyerRequests = async (): Promise<buyer[]> => {
 
-    return db.buyer.findMany({
+    const getBuyerRequests=await db.buyer.findMany({
         where:
-            { active: false, approved: false },
+        {
+            AND: [
+                { approved: false },
+                { active: false }
+            ], 
+        },
         include: {
             location:
             {
@@ -135,8 +142,11 @@ export const getBuyerRequests = async (): Promise<buyer[]> => {
                     idenfication: true, registration: true
                 }
             }
+            
         }
+        
     })
+    return getBuyerRequests;
 }
 
 export const getSingleBuyerRequest = async (id: string): Promise<buyer | null> => {
@@ -190,26 +200,27 @@ export const acceptBuyerRequest = async (id: string): Promise<string> => {
 };
 
 
+
+
+
 export const inActivateBuyer = async (id: string): Promise<string> => {
+    const buyer = await db.buyer.findUnique({
+        where: { id },
+    });
 
-    const inActivateBuyer = await db.buyer.update({
-        where: {
-            id
-        },
+    if (!buyer) {
+        throw new Error("Farmer not found");
+    }
+
+    const updatedBuyer = await db.buyer.update({
+        where: { id },
         data: {
-            active: false
-        }
-    })
+            active: !buyer.active,
+        },
+    });
 
-    return "Buyer inactivated successfully!";
-}
-
-
-
-
-
-
-
+    return updatedBuyer.active ? 'Buyer activated successfully' : 'Buyer inactivated successfully';
+};
 
 
 
