@@ -221,6 +221,12 @@ export const getSingleFarmerRequest = async (id: string): Promise<Farmer | null>
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
         }
     })
