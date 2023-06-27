@@ -17,6 +17,17 @@ buyerDemandRouter.post('/', async (request: Request, response: Response) => {
     }
 })
 
+// to get all the farmer supply
+buyerDemandRouter.get('/', async (request: Request, response: Response) => {
+    try {
+        const getBuyerDemands = await buyerService.getBuyerDemands()
+        return response.status(201).json(getBuyerDemands)
+
+    } catch (error: any) {
+        return response.status(500).json(error.message)
+    }
+})
+
 // to delete the farmer supply
 buyerDemandRouter.delete('/:id', async (request: Request, response: Response) => {
     const { id } = request.params

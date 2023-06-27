@@ -62,3 +62,9 @@ export const getBuyerDemand = async (id: string): Promise<BuyerDemand | null> =>
     return getBuyerDemand;
 
 }
+
+export const getBuyerDemands = async (): Promise<BuyerDemand[] | null> => {
+    const getBuyerDemands = await db.buyerDemand.findMany({
+    })
+    return getBuyerDemands;
+}

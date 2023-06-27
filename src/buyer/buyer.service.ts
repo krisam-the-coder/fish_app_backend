@@ -209,7 +209,7 @@ export const inActivateBuyer = async (id: string): Promise<string> => {
     });
 
     if (!buyer) {
-        throw new Error("Farmer not found");
+        throw new Error("Buyer not found");
     }
 
     const updatedBuyer = await db.buyer.update({

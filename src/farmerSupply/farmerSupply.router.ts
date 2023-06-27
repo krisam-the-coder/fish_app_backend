@@ -43,7 +43,9 @@ farmerSupplyRouter.get('/:id', async (request: Request, response: Response) => {
     }
 })
 
-//to update th farmer supply
+
+
+//to update the farmer supply
 farmerSupplyRouter.patch('/:id', async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
@@ -66,4 +68,8 @@ farmerSupplyRouter.get('/', async (request: Request, response: Response) => {
         return response.status(500).json(error.message)
     }
 })
+
+
+
+// To get all the Buyer Request in Supply
 
