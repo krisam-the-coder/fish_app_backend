@@ -24,7 +24,7 @@ export const getBuyers = async (): Promise<buyer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true
+                    nagarpalika: true,Woda:true
                 }
             },
             Document: {
@@ -88,7 +88,7 @@ export const getBuyer = async (id: string): Promise<buyer | null> => {
                     {
                         pradesh: true, district: true, mahaNagarpalika: true,
                         upaMahaNagarpalika: true, gaupalika: true,
-                        nagarpalika: true
+                        nagarpalika: true,Woda:true
                     }
                 },
                 Document: {

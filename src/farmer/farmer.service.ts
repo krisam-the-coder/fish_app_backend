@@ -25,7 +25,7 @@ export const getFarmers = async (): Promise<Farmer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true
+                    nagarpalika: true,Woda:true
                 }
             },
             Document: {
@@ -86,7 +86,7 @@ export const getFarmer = async (id: string): Promise<Farmer | null> => {
                     {
                         pradesh: true, district: true, mahaNagarpalika: true,
                         upaMahaNagarpalika: true, gaupalika: true,
-                        nagarpalika: true
+                        nagarpalika: true,Woda:true
                     }
                 },
                 Document: {
