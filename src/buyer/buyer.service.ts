@@ -31,6 +31,12 @@ export const getBuyers = async (): Promise<buyer[]> => {
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
         }
     });
@@ -89,6 +95,12 @@ export const getBuyer = async (id: string): Promise<buyer | null> => {
                     select: {
                         idenfication: true, registration: true
                     }
+                },
+                user: {
+                    select: {
+                        userName: true,
+                        phoneNumber: true
+                    }
                 }
             }
         }
@@ -141,6 +153,12 @@ export const getBuyerRequests = async (): Promise<buyer[]> => {
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
             
         }
@@ -167,6 +185,12 @@ export const getSingleBuyerRequest = async (id: string): Promise<buyer | null> =
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
