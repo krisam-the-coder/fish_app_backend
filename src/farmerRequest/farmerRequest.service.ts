@@ -5,8 +5,8 @@ type FarmerRequest = {
     buyerDemandId :string, 
     farmerId: string, 
   isApproved  :  boolean,
-  supplyWeight :string,
-    phoneNumber: number
+  supplyWeight :number,
+    phoneNumber: string
 
 };
 
@@ -34,25 +34,27 @@ export const getFarmerRequests = async (id: string): Promise<FarmerRequest[]> =>
 
 export const approveFarmerRequests = async (id: string): Promise<FarmerRequest> => {
 
+
     const approveFarmerRequests = await db.farmerRequest.update({
         where: {
-            buyerDemandId: id
+      id
         },
         data: {
-            isApproved: true
-        }
-    })
+            isApproved: true,
+        },
+    });
+
     return approveFarmerRequests;
 }
 
 
-export const deleteFarmerRequests = async (id: string): Promise<FarmerRequest> => {
+export const deleteFarmerRequests = async (id: string): Promise<String> => {
 
     const deleteFarmerRequests = await db.farmerRequest.delete({
         where: {
-            buyerDemandId: id
+          id
         }
     })
-    return deleteFarmerRequests;
+    return "Farmer Request rejected successfully!";
 }
 

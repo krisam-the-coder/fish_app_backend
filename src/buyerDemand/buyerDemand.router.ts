@@ -6,7 +6,7 @@ import * as buyerService from "./buyerDemand.service"
 export const buyerDemandRouter = express.Router()
 
 
-// to create a farmer supply
+// to create a buyer demand 
 buyerDemandRouter.post('/', async (request: Request, response: Response) => {
     try {
         const buyerDemand = await buyerService.createBuyerDemand(request.body)
@@ -17,7 +17,7 @@ buyerDemandRouter.post('/', async (request: Request, response: Response) => {
     }
 })
 
-// to get all the farmer supply
+// to get all the buyer demand 
 buyerDemandRouter.get('/', async (request: Request, response: Response) => {
     try {
         const getBuyerDemands = await buyerService.getBuyerDemands()
@@ -28,7 +28,7 @@ buyerDemandRouter.get('/', async (request: Request, response: Response) => {
     }
 })
 
-// to delete the farmer supply
+// to delete the buyer demand 
 buyerDemandRouter.delete('/:id', async (request: Request, response: Response) => {
     const { id } = request.params
     try {
@@ -41,7 +41,7 @@ buyerDemandRouter.delete('/:id', async (request: Request, response: Response) =>
 })
 
 
-// to get supplies of a particular farmer
+// to get demand of a particular  buyer  
 buyerDemandRouter.get('/:id', async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
@@ -53,7 +53,7 @@ buyerDemandRouter.get('/:id', async (request: Request, response: Response) => {
     }
 })
 
-//to update th farmer supply
+//to update th demand
 buyerDemandRouter.patch('/:id', async (request: Request, response: Response) => {
     const { id } = request.params;
     try {

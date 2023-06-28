@@ -39,7 +39,7 @@ model Farmer {
   approved       Boolean
   location       Location?
   Document       Document?
-  Issues         Issues?
+  Issues         Issues[]
   farmerSupply   FarmerSupply[]
   FarmerRequest  FarmerRequest?
 }
@@ -55,7 +55,7 @@ model Buyer {
   active           Boolean
   approved         Boolean
   Document         Document?
-  Issues           Issues?
+  Issues           Issues[]
   buyerDemand      BuyerDemand[]
   BuyerRequest     BuyerRequest?
 }
@@ -88,9 +88,9 @@ model Document {
 model Issues {
   id       String   @id @default(uuid())
   farmer   Farmer?  @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-  farmerId String?  @unique
+  farmerId String?  
   buyer    Buyer?   @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  buyerId  String?  @unique
+  buyerId  String?  
   issue    String
   time     DateTime @updatedAt
 }
@@ -98,7 +98,7 @@ model Issues {
 model FarmerSupply {
   id            String         @id @default(uuid())
   farmer        Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-  farmerId      String         @unique
+  farmerId      String         
   fishType      String
   avgFishWeight Int
   totalWeight   Int
@@ -109,7 +109,7 @@ model FarmerSupply {
 model BuyerDemand {
   id            String          @id @default(uuid())
   Buyer         Buyer           @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  buyerId       String          @unique
+  buyerId       String         
   fishType      String
   avgFishWeight Int
   totalWeight   Int
@@ -125,9 +125,9 @@ model BuyerRequest {
   farmerSupplyId String       @unique
   Buyer          Buyer        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   buyerId        String       @unique
-  requestWeight  String
+  requestWeight  Int
   isApproved     Boolean
-  phoneNumber    Int
+  phoneNumber    String
 }
 
 //farmer listing page
@@ -138,8 +138,8 @@ model FarmerRequest {
   farmer        Farmer      @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   farmerId      String      @unique
   isApproved    Boolean
-  supplyWeight  String
-  phoneNumber   Int
+  supplyWeight  Int
+  phoneNumber   String
 }
 
 // For OTP of Users

@@ -7,16 +7,15 @@ type BuyerDemand ={
   avgFishWeight :number,
     totalWeight: number,
   deadline    :  Date, 
-  yieldDate    : Date 
 }
 
 
 export const createBuyerDemand = async (data: any): Promise<BuyerDemand> => {
-    const { buyerId, fishType, avgFishWeight, totalWeight, deadline, yieldDate } = data;
+    const { buyerId, fishType, avgFishWeight, totalWeight, deadline } = data;
 
     return db.buyerDemand.create({
         data: {
-            buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline), yieldDate: new Date(yieldDate)
+            buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline)
         }
     })
 }
@@ -39,23 +38,23 @@ export const deleteBuyerDemand = async (id: string): Promise<string> => {
 
 
 export const updateBuyerDemand = async (data: any, id: string): Promise<BuyerDemand> => {
-    const { buyerId, fishType, avgFishWeight, totalWeight, deadline, yieldDate } = data;
+    const { buyerId, fishType, avgFishWeight, totalWeight, deadline } = data;
     const updateFarmerSupply = await db.buyerDemand.update({
         where: {
             id
         },
         data: {
-            buyerId, fishType, avgFishWeight, totalWeight, deadline: new Date(deadline), yieldDate: new Date(yieldDate)
+            buyerId, fishType, avgFishWeight, totalWeight, deadline: new Date(deadline)
         }
     })
     return updateFarmerSupply;
 
 }
 
-export const getBuyerDemand = async (id: string): Promise<BuyerDemand | null> => {
-    const getBuyerDemand = await db.buyerDemand.findUnique({
+export const getBuyerDemand = async (id: string): Promise<BuyerDemand[] | null> => {
+    const getBuyerDemand = await db.buyerDemand.findMany({
         where: {
-            id
+           buyerId: id
         },
 
     })

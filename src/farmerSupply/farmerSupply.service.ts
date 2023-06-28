@@ -57,10 +57,10 @@ export const getFarmerSupplies = async (): Promise<FarmerSupply[] | null> => {
     })
     return getFarmerSupplies;
 }
-export const getFarmerSupply= async (id:string): Promise<FarmerSupply | null> => {
-    const getFarmerSupply =await db.farmerSupply.findUnique({
+export const getFarmerSupply= async (id:string): Promise<FarmerSupply[] | null> => {
+    const getFarmerSupply =await db.farmerSupply.findMany({
         where:{
-            id
+            farmerId:id
         }
     })
     return getFarmerSupply;

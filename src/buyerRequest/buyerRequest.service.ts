@@ -4,8 +4,8 @@ import { db } from "../utils/db.server"
 type BuyerRequest = {
   farmerSupplyId :string ,
   buyerId      :  string ,
-  requestWeight:string,
-  phoneNumber:number
+  requestWeight:number,
+  phoneNumber: string
 
 };
 
@@ -35,7 +35,7 @@ export const approveBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
   
   const approveBuyerRequests=await  db.buyerRequest.update({ 
     where:{
-      farmerSupplyId:id
+      buyerId:id
     },
     data:{
       isApproved:true
@@ -49,7 +49,7 @@ export const deleteBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
   
   const deleteBuyerRequests =await  db.buyerRequest.delete({ 
     where:{
-      farmerSupplyId:id
+      buyerId:id
     }
   })
   return deleteBuyerRequests;

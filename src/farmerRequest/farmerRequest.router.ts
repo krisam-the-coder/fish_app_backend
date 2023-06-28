@@ -41,7 +41,7 @@ farmerRequestRouter.patch("/:id", async (request: Request, response: Response) =
     }
 })
 
-// to reject the buyer requests
+// to reject the farmer request
 farmerRequestRouter.delete("/:id", async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
