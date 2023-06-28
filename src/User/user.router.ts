@@ -10,20 +10,30 @@ export const userRouter = express.Router();
 
 // To Register A New User 
 
-userRouter.post('/register', body("userName").isString(), body("phoneNumber").isString(), body("password").isString(), async (request: Request, response: Response) => {
-    const error = validationResult(request)
-    if (!error.isEmpty()) {
-        return response.status(400).json({ error: error.array() })
-    }
-    try {
-        const registerUser = await UserService.createUser(request.body)
-        return response.status(201).json(registerUser)
-    } catch (error: any) {
-        return response.status(500).json(error.message)
-    }
-})
+userRouter.post(
+    '/register',
+    [
+        body('userName').isString().notEmpty(),
+        body('phoneNumber').isString().notEmpty(),
+        body('password').isString().notEmpty()
+    ],
+    async (request: Request, response: Response) => {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            return response.status(400).json({ errors: errors.array() });
+        }
 
-userRouter.post('/login', body("phoneNumber").isString(), body("password").isString(), async (request: Request, response: Response) => {
+        try {
+            const registerUser = await UserService.createUser(request.body);
+            return response.status(201).json(registerUser);
+        } catch (error: any) {
+            return response.status(500).json(error.message);
+        }
+    }
+);
+
+
+userRouter.post('/login', body("phoneNumber").isString().notEmpty(), body("password").isString().notEmpty(), async (request: Request, response: Response) => {
 
     const error = validationResult(request)
     if (!error.isEmpty()) {
@@ -55,7 +65,7 @@ userRouter.post('/get-otp', body("phoneNumber").isString(), async (request: Requ
 })
 
 
-userRouter.post('/verify-code', body("code").isString(),body("userId").isString(), async (request: Request, response: Response) => {
+userRouter.post('/verify-code', body("code").isString(), body("userId").isString(), async (request: Request, response: Response) => {
 
     const error = validationResult(request)
     if (!error.isEmpty()) {
@@ -71,7 +81,7 @@ userRouter.post('/verify-code', body("code").isString(),body("userId").isString(
 })
 
 
-userRouter.patch('/reset-password', body("password").isString(),body("id").isString(), async (request: Request, response: Response) => {
+userRouter.patch('/reset-password', body("password").isString(), body("id").isString(), async (request: Request, response: Response) => {
 
     const error = validationResult(request)
     if (!error.isEmpty()) {

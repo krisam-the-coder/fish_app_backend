@@ -24,12 +24,18 @@ export const getBuyers = async (): Promise<buyer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true
+                    nagarpalika: true,Woda:true
                 }
             },
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
@@ -82,12 +88,18 @@ export const getBuyer = async (id: string): Promise<buyer | null> => {
                     {
                         pradesh: true, district: true, mahaNagarpalika: true,
                         upaMahaNagarpalika: true, gaupalika: true,
-                        nagarpalika: true
+                        nagarpalika: true,Woda:true
                     }
                 },
                 Document: {
                     select: {
                         idenfication: true, registration: true
+                    }
+                },
+                user: {
+                    select: {
+                        userName: true,
+                        phoneNumber: true
                     }
                 }
             }
@@ -141,6 +153,12 @@ export const getBuyerRequests = async (): Promise<buyer[]> => {
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
             
         }
@@ -167,6 +185,12 @@ export const getSingleBuyerRequest = async (id: string): Promise<buyer | null> =
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
