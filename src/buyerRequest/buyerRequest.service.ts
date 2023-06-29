@@ -29,11 +29,11 @@ export const getBuyerRequests = async (id: string): Promise<BuyerRequest[]> => {
 }
 
 
-export const approveBuyerRequests = async (id: string): Promise<BuyerRequest> => {
-
-  const approveBuyerRequests = await db.buyerRequest.update({
-    where: {
-      buyerId: id
+export const approveBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
+  
+  const approveBuyerRequests=await  db.buyerRequest.update({ 
+    where:{
+   id
     },
     data: {
       isApproved: true
@@ -43,13 +43,13 @@ export const approveBuyerRequests = async (id: string): Promise<BuyerRequest> =>
 }
 
 
-export const deleteBuyerRequests = async (id: string): Promise<BuyerRequest> => {
-
-  const deleteBuyerRequests = await db.buyerRequest.delete({
-    where: {
-      buyerId: id
+export const deleteBuyerRequests =async (id:string):Promise<String>=>{
+  
+  const deleteBuyerRequests =await  db.buyerRequest.delete({ 
+    where:{
+      buyerId:id
     }
   })
-  return deleteBuyerRequests;
+  return "Buyer request deleted!";
 }
 

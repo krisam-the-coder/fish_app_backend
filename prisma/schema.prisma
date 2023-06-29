@@ -122,7 +122,7 @@ model BuyerDemand {
 model BuyerRequest {
   id             String       @id @default(uuid())
   farmerSupply   FarmerSupply @relation(fields: [farmerSupplyId], references: [id], onDelete: Cascade)
-  farmerSupplyId String       @unique
+  farmerSupplyId String       
   Buyer          Buyer        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   buyerId        String       @unique
   requestWeight  Int
@@ -134,7 +134,7 @@ model BuyerRequest {
 model FarmerRequest {
   id            String      @id @default(uuid())
   buyerDemand   BuyerDemand @relation(fields: [buyerDemandId], references: [id], onDelete: Cascade)
-  buyerDemandId String      @unique
+  buyerDemandId String      
   farmer        Farmer      @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   farmerId      String      @unique
   isApproved    Boolean
