@@ -11,6 +11,7 @@ import { farmerSupplyRouter } from "./farmerSupply/farmerSupply.router"
 import { buyerDemandRouter } from "./buyerDemand/buyerDemand.router"
 import { buyerRequestRouter } from "./buyerRequest/buyerRequest.router"
 import { farmerRequestRouter } from "./farmerRequest/farmerRequest.router"
+import { issueRouter } from "./issues/issues.router"
 
 dotenv.config()
 
@@ -33,6 +34,7 @@ app.use('/api/farmerSupply', farmerSupplyRouter)
 app.use('/api/farmerRequest', farmerRequestRouter)
 app.use('/api/buyerDemand', buyerDemandRouter)
 app.use('/api/buyerRequest', buyerRequestRouter)
+app.use('/api/issues', issueRouter)
 
 app.get('/api/', (req, res) => {
     res.send("Api running correctly")
