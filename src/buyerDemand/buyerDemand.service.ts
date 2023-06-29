@@ -9,15 +9,21 @@ type BuyerDemand ={
   deadline    :  Date, 
 }
 
+type Success = {
+    success: boolean,
+    messaage: String
+}
 
-export const createBuyerDemand = async (data: any): Promise<BuyerDemand> => {
+
+export const createBuyerDemand = async (data: any): Promise<Success> => {
     const { buyerId, fishType, avgFishWeight, totalWeight, deadline } = data;
 
-    return db.buyerDemand.create({
+    const createBuyerDemand=await db.buyerDemand.create({
         data: {
             buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline)
         }
     })
+    return { success: true, messaage: "Buyer demand is successfully created!" }
 }
 
 export const deleteBuyerDemand = async (id: string): Promise<string> => {
