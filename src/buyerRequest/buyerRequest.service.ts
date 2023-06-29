@@ -4,7 +4,7 @@ import { db } from "../utils/db.server"
 type BuyerRequest = {
   farmerSupplyId: string,
   buyerId: string,
-  requestWeight: string,
+  requestWeight: number,
 };
 
 

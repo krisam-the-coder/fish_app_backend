@@ -13,11 +13,16 @@ if (!SECRET_KEY) {
 }
 
 
+type Success = {
+    success: boolean,
+    message: string
+}
+
 
 type User = {
     userName: string,
     password: string,
-    phoneNumber: string,
+    phoneNumber: number,
 }
 
 type resetPassword = {
@@ -46,27 +51,27 @@ type success = {
     verified: boolean,
 }
 
-export const createUser = async (data: User): Promise<string> => {
+export const createUser = async (data: User): Promise<Success> => {
     const existingUser = await db.user.findUnique({ where: { userName: data.userName } });
-    const existingNumber = await db.user.findUnique({ where: { phoneNumber: data.phoneNumber } });
+    const existingNumber = await db.user.findUnique({ where: { phoneNumber: String(data.phoneNumber) } });
     const hashPassword = await hash(data.password, 12)
 
     if (existingUser) {
-        return "Username already exists";
+        return { success: false, message: 'Username Already exists' }
     }
 
     if (existingNumber) {
-        return "Phone Number already exists";
+        return { success: false, message: 'Phone Number already exists' }
     }
 
     await db.user.create({
         data: {
             userName: data.userName,
             password: hashPassword,
-            phoneNumber: data.phoneNumber
+            phoneNumber: String(data.phoneNumber)
         }
     })
-    return "Account has been Created Successfully"
+    return { success: true, message: 'Account Created' }
 
 
 }
@@ -75,7 +80,7 @@ export const createUser = async (data: User): Promise<string> => {
 
 export const login = async (data: User): Promise<Session | string> => {
     const { phoneNumber, password } = data;
-    const userData = await db.user.findUnique({ where: { phoneNumber } });
+    const userData = await db.user.findUnique({ where: { phoneNumber: String(phoneNumber) } });
 
     if (userData) {
         const isPasswordValid = await compare(password, userData.password);

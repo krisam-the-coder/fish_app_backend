@@ -13,9 +13,20 @@ export const userRouter = express.Router();
 userRouter.post(
     '/register',
     [
-        body('userName').isString().notEmpty(),
-        body('phoneNumber').isString().notEmpty(),
-        body('password').isString().notEmpty()
+        body('userName')
+            .isString().withMessage("Username must be a string")
+            .notEmpty().withMessage("Username should not be empty")
+            .isLength({ min: 6 }).withMessage("Username should have a minimum of 6 characters."),
+
+        body('phoneNumber')
+            .isNumeric().withMessage("Phone number must be in numeric digits")
+            .notEmpty().withMessage("Phone number should not be empty")
+            .isLength({ min: 10,max:10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
+
+        body('password')
+            .isString().withMessage("Password must be a string")
+            .notEmpty().withMessage("Password should not be empty")
+            .isLength({ min: 6 }).withMessage("Password should have a minimum of 6 characters.")
     ],
     async (request: Request, response: Response) => {
         const errors = validationResult(request);
