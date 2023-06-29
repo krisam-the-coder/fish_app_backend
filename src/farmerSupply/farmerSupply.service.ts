@@ -1,5 +1,5 @@
+import { ParsedUrlQuery } from "querystring";
 import { db } from "../utils/db.server"
-
 
 type FarmerSupply = {
   fishType     : string,
@@ -52,11 +52,44 @@ export const updateFarmerSupply = async (data:any,id: string): Promise<FarmerSup
    
 }
 
-export const getFarmerSupplies = async (): Promise<FarmerSupply[] | null> => {
+export const getFarmerSupplies = async (date:any, location: any, fishType: any): Promise<FarmerSupply[]> => {
+    if(date !== undefined){
+        let getFarmerSupplies;
+        return   getFarmerSupplies = await db.farmerSupply.findMany({
+            where:{
+                yieldDate:new Date(date)
+            }
+        })
+    }
+    if (location !== undefined){
+        let getFarmerSupplies;
+        return   getFarmerSupplies = await db.farmerSupply.findMany({
+            where:{
+                farmer:{
+                   location:{
+                    district:location
+                   } 
+                }
+            }
+        })
+    }
+    if (fishType !== undefined){
+        console.log(fishType)
+        let getFarmerSupplies;
+        return   getFarmerSupplies = await db.farmerSupply.findMany({
+            where:{
+             fishType:fishType
+            }
+        })
+    }
     const getFarmerSupplies =await db.farmerSupply.findMany({
     })
     return getFarmerSupplies;
 }
+
+
+
+
 export const getFarmerSupply= async (id:string): Promise<FarmerSupply[] | null> => {
     const getFarmerSupply =await db.farmerSupply.findMany({
         where:{
