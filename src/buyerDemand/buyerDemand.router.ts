@@ -19,14 +19,16 @@ buyerDemandRouter.post('/', async (request: Request, response: Response) => {
 
 // to get all the buyer demand 
 buyerDemandRouter.get('/', async (request: Request, response: Response) => {
+    const { date, location, fishType } = request.query;
     try {
-        const getBuyerDemands = await buyerService.getBuyerDemands()
+        const getBuyerDemands = await buyerService.getBuyerDemands(date, location, fishType)
         return response.status(201).json(getBuyerDemands)
 
     } catch (error: any) {
         return response.status(500).json(error.message)
     }
 })
+
 
 // to delete the buyer demand 
 buyerDemandRouter.delete('/:id', async (request: Request, response: Response) => {

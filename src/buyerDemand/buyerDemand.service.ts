@@ -62,7 +62,36 @@ export const getBuyerDemand = async (id: string): Promise<BuyerDemand[] | null> 
 
 }
 
-export const getBuyerDemands = async (): Promise<BuyerDemand[] | null> => {
+export const getBuyerDemands = async (date: any, location: any, fishType: any): Promise<BuyerDemand[] | null> => {
+    if (date !== undefined) {
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                yieldDate: new Date(date)
+            }
+        })
+    }
+    if (location !== undefined) {
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                Buyer: {
+                    location: {
+                        district: location
+                    }
+                }
+            }
+        })
+    }
+    if (fishType !== undefined) {
+
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                fishType: fishType
+            }
+        })
+    }
     const getBuyerDemands = await db.buyerDemand.findMany({
     })
     return getBuyerDemands;

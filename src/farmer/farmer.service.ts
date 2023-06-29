@@ -10,6 +10,10 @@ type Farmer = {
     approved: boolean;
 };
 
+type Success={
+    success:boolean,
+    messaage:String
+}
 
 
 
@@ -43,7 +47,7 @@ export const getFarmers = async (): Promise<Farmer[]> => {
     })
 }
 
-export const createFarmerRequest = async (data: any): Promise<Farmer | string> => {
+export const createFarmerRequest = async (data: any): Promise<Success> => {
     const {
         userId, farmName, profilePicture, pondSize, pradesh, district, nagarpalika,
         Woda, idenfication, registration, mahaNagarpalika, upaMahaNagarpalika, gaupalika
@@ -68,9 +72,10 @@ export const createFarmerRequest = async (data: any): Promise<Farmer | string> =
     })
 
     if (Farmer && Location && document) {
-        return "New Farmer request added Successfully"
-    } else {
-        return "Unable to create Farmer request"
+        return {success:true, messaage:"New farmer is successfully created!"}
+    } 
+    else{
+        return { success: false, messaage: "An eerror occured" }  
     }
 }
 
