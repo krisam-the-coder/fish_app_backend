@@ -21,7 +21,7 @@ userRouter.post(
         body('phoneNumber')
             .isNumeric().withMessage("Phone number must be in numeric digits")
             .notEmpty().withMessage("Phone number should not be empty")
-            .isLength({ min: 10,max:10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
+            .isLength({ min: 10, max: 10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
 
         body('password')
             .isString().withMessage("Password must be a string")
@@ -38,7 +38,7 @@ userRouter.post(
             const registerUser = await UserService.createUser(request.body);
             return response.status(201).json(registerUser);
         } catch (error: any) {
-            return response.status(500).json(error.message);
+            return response.status(500).json({ success: false, message: "Internal server error!" });
         }
     }
 );
@@ -55,7 +55,7 @@ userRouter.post('/login', body("phoneNumber").isString().notEmpty(), body("passw
         const login = await UserService.login(request.body)
         return response.status(200).json(login)
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error!" });
     }
 })
 
@@ -71,7 +71,7 @@ userRouter.post('/get-otp', body("phoneNumber").isString(), async (request: Requ
         const getOtp = await UserService.otpSender(request.body.phoneNumber)
         return response.status(200).json(getOtp)
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error!" });
     }
 })
 
@@ -87,7 +87,7 @@ userRouter.post('/verify-code', body("code").isString(), body("userId").isString
         const getVerify = await UserService.otpVerify(request.body)
         return response.status(200).json(getVerify)
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error!" });
     }
 })
 
@@ -103,7 +103,7 @@ userRouter.patch('/reset-password', body("password").isString(), body("id").isSt
         const passwordReset = await UserService.passwordReset(request.body)
         return response.status(200).json(passwordReset)
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error!" });
     }
 })
 

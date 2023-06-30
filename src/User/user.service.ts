@@ -80,15 +80,15 @@ export const createUser = async (data: User): Promise<Success> => {
 
 export const login = async (data: User): Promise<Session | string> => {
     const { phoneNumber, password } = data;
-    const userData = await db.user.findUnique({ where: { phoneNumber: String(phoneNumber) } });
-
+    const userData = await db.user.findUnique({ where: { phoneNumber: String(phoneNumber) },include:{Farmer:{select:{active:true}}} });
+    console.log(userData)
     if (userData) {
         const isPasswordValid = await compare(password, userData.password);
 
         if (!isPasswordValid) {
             return "Invalid Password!";
         }
-
+        
         const token = jwt.sign({ userName: userData.userName }, SECRET_KEY);
         const sessionToken: Session = {
             session_token: token,
