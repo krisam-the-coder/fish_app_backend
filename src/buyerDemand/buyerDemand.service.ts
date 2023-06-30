@@ -23,7 +23,12 @@ export const createBuyerDemand = async (data: any): Promise<Success> => {
             buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline)
         }
     })
-    return { success: true, messaage: "Buyer demand is successfully created!" }
+    if(createBuyerDemand){ return { success: true, messaage: "Buyer demand is successfully created!" }}
+    else{
+        return { success: false, messaage: "An error occured while creating the buyer demand!" }
+
+    }
+   
 }
 
 export const deleteBuyerDemand = async (id: string): Promise<string> => {
