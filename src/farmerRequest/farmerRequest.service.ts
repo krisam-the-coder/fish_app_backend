@@ -10,8 +10,13 @@ type FarmerRequest = {
 
 };
 
+type Success = {
+    success: boolean,
+    messaage: String
+}
 
-export const createFarmerRequest = async (data: FarmerRequest): Promise<FarmerRequest> => {
+
+export const createFarmerRequest = async (data: FarmerRequest): Promise<Success> => {
     const { buyerDemandId, phoneNumber, farmerId, supplyWeight } = data;
     
     const createFarmerRequest = await db.farmerRequest.create({
@@ -19,8 +24,7 @@ export const createFarmerRequest = async (data: FarmerRequest): Promise<FarmerRe
             buyerDemandId, isApproved: false, phoneNumber, farmerId, supplyWeight
         }
     })
-    
-    return createFarmerRequest
+    return {success:true,messaage:"Farmer request created successfully!"}
 }
 
 export const getFarmerRequests = async (id: string): Promise<FarmerRequest[]> => {

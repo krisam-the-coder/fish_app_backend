@@ -7,15 +7,21 @@ type BuyerRequest = {
   requestWeight: number,
 };
 
+type Success = {
+  success: boolean,
+  message: string
+}
 
-export const createBuyerRequest = async (data: any): Promise<BuyerRequest> => {
-  const { farmerSupplyId, phoneNumber, buyerId, requestWeight } = data;
-  const createBuyerRequest = await db.buyerRequest.create({
-    data: {
+
+
+export const createBuyerRequest = async (data: any): Promise<Success>=>{
+  const { farmerSupplyId, phoneNumber, buyerId, requestWeight }=data;
+const   createBuyerRequest=await db.buyerRequest.create({
+    data:{
       farmerSupplyId, isApproved: false, phoneNumber, buyerId, requestWeight
     }
   })
-  return createBuyerRequest
+  return { success: true, message: "Buyer request is successfully created!" }
 }
 
 export const getBuyerRequests = async (id: string): Promise<BuyerRequest[]> => {

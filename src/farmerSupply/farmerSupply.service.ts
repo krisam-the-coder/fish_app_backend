@@ -9,16 +9,23 @@ type FarmerSupply = {
     farmerId:string,
 };
 
+type Success = {
+    success: boolean,
+    messaage: String
+}
 
 
-export const createFarmerSupply = async (data:any): Promise<FarmerSupply> => {
+
+
+export const createFarmerSupply = async (data: any): Promise<Success> => {
     const {fishType,avgFishWeight,totalWeight,yieldDate,farmerId}=data;
     
-    return db.farmerSupply.create({
+    const createFarmerSupply=await  db.farmerSupply.create({
         data:{
             fishType, avgFishWeight, totalWeight, yieldDate: new Date(yieldDate), farmerId
         }
     })
+    return { success: true, messaage: "Farmer supply created successfully!" }
 }
 
 export const deleteFarmerSupply = async (id:string): Promise<string> => {

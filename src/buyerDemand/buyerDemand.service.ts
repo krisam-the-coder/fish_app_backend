@@ -9,15 +9,26 @@ type BuyerDemand ={
   deadline    :  Date, 
 }
 
+type Success = {
+    success: boolean,
+    messaage: String
+}
 
-export const createBuyerDemand = async (data: any): Promise<BuyerDemand> => {
+
+export const createBuyerDemand = async (data: any): Promise<Success> => {
     const { buyerId, fishType, avgFishWeight, totalWeight, deadline } = data;
 
-    return db.buyerDemand.create({
+    const createBuyerDemand=await db.buyerDemand.create({
         data: {
             buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline)
         }
     })
+    if(createBuyerDemand){ return { success: true, messaage: "Buyer demand is successfully created!" }}
+    else{
+        return { success: false, messaage: "An error occured while creating the buyer demand!" }
+
+    }
+   
 }
 
 export const deleteBuyerDemand = async (id: string): Promise<string> => {
@@ -62,7 +73,36 @@ export const getBuyerDemand = async (id: string): Promise<BuyerDemand[] | null> 
 
 }
 
-export const getBuyerDemands = async (): Promise<BuyerDemand[] | null> => {
+export const getBuyerDemands = async (date: any, location: any, fishType: any): Promise<BuyerDemand[] | null> => {
+    if (date !== undefined) {
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                yieldDate: new Date(date)
+            }
+        })
+    }
+    if (location !== undefined) {
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                Buyer: {
+                    location: {
+                        district: location
+                    }
+                }
+            }
+        })
+    }
+    if (fishType !== undefined) {
+
+        let getBuyerDemands;
+        return getBuyerDemands = await db.buyerDemand.findMany({
+            where: {
+                fishType: fishType
+            }
+        })
+    }
     const getBuyerDemands = await db.buyerDemand.findMany({
     })
     return getBuyerDemands;

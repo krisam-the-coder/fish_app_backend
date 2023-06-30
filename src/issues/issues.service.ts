@@ -25,7 +25,13 @@ type buyerIssue={
   } | null;
 }
 
-export const createFarmerIssue = async (data: any): Promise<farmerIssue> => {
+type Success = {
+  success: boolean,
+  messaage: String
+}
+
+
+export const createFarmerIssue = async (data: any): Promise<Success> => {
   const { farmerId, issue } = data;
 
   const farmerIssue = await db.issues.create({
@@ -47,7 +53,7 @@ export const createFarmerIssue = async (data: any): Promise<farmerIssue> => {
     }
   });
 
-  return farmerIssue
+  return { success: true, messaage: "Farmer issue created successfully!" }
 }
 
 export const createBuyerIssue = async (data: any): Promise<buyerIssue> => {
