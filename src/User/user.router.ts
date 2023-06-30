@@ -19,7 +19,7 @@ userRouter.post(
             .isLength({ min: 6 }).withMessage("Username should have a minimum of 6 characters."),
 
         body('phoneNumber')
-            .isNumeric().withMessage("Phone number must be in numeric digits")
+            .isMobilePhone("ne-NP").withMessage('Please provide a valid phone number')
             .notEmpty().withMessage("Phone number should not be empty")
             .isLength({ min: 10, max: 10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
 
@@ -44,68 +44,100 @@ userRouter.post(
 );
 
 
-userRouter.post('/login', body("phoneNumber").isString().notEmpty(), body("password").isString().notEmpty(), async (request: Request, response: Response) => {
+userRouter.post('/login', [
+    body('phoneNumber')
+        .isMobilePhone("ne-NP").withMessage('Please provide a valid phone number')
+        .notEmpty().withMessage("Phone number should not be empty")
+        .isLength({ min: 10, max: 10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
 
-    const error = validationResult(request)
-    if (!error.isEmpty()) {
-        return response.status(400).json({ error: error.array() })
-    }
+    body('password')
+        .isString().withMessage("Password must be a string")
+        .notEmpty().withMessage("Password should not be empty")
+        .isLength({ min: 6 }).withMessage("Password should have a minimum of 6 characters."),
+],
+    async (request: Request, response: Response) => {
 
-    try {
-        const login = await UserService.login(request.body)
-        return response.status(200).json(login)
-    } catch (error: any) {
-        return response.status(500).json({ success: false, message: "Internal server error!" });
-    }
-})
+        const error = validationResult(request)
+        if (!error.isEmpty()) {
+            return response.status(400).json({ error: error.array() })
+        }
 
-
-userRouter.post('/get-otp', body("phoneNumber").isString(), async (request: Request, response: Response) => {
-
-    const error = validationResult(request)
-    if (!error.isEmpty()) {
-        return response.status(400).json({ error: error.array() })
-    }
-
-    try {
-        const getOtp = await UserService.otpSender(request.body.phoneNumber)
-        return response.status(200).json(getOtp)
-    } catch (error: any) {
-        return response.status(500).json({ success: false, message: "Internal server error!" });
-    }
-})
+        try {
+            const login = await UserService.login(request.body)
+            return response.status(200).json(login)
+        } catch (error: any) {
+            return response.status(500).json({ success: false, message: "Internal server error!" });
+        }
+    })
 
 
-userRouter.post('/verify-code', body("code").isString(), body("userId").isString(), async (request: Request, response: Response) => {
+userRouter.post('/get-otp',
+    [
+        body('phoneNumber')
+            .isMobilePhone("ne-NP").withMessage('Please provide a valid phone number')
+            .notEmpty().withMessage("Phone number should not be empty")
+            .isLength({ min: 10, max: 10 }).withMessage("Phone number should have a minimum and maximum of 10 digits."),
+    ],
+    async (request: Request, response: Response) => {
 
-    const error = validationResult(request)
-    if (!error.isEmpty()) {
-        return response.status(400).json({ error: error.array() })
-    }
+        const error = validationResult(request)
+        if (!error.isEmpty()) {
+            return response.status(400).json({ error: error.array() })
+        }
 
-    try {
-        const getVerify = await UserService.otpVerify(request.body)
-        return response.status(200).json(getVerify)
-    } catch (error: any) {
-        return response.status(500).json({ success: false, message: "Internal server error!" });
-    }
-})
+        try {
+            const getOtp = await UserService.otpSender(request.body.phoneNumber)
+            return response.status(200).json(getOtp)
+        } catch (error: any) {
+            return response.status(500).json({ success: false, message: "Internal server error!" });
+        }
+    })
 
 
-userRouter.patch('/reset-password', body("password").isString(), body("id").isString(), async (request: Request, response: Response) => {
+userRouter.post('/verify-code',
+    [
+        body('code')
+            .isString().withMessage("otp code must be a string")
+            .notEmpty().withMessage("otp code should not be empty")
+            .isLength({ min: 6, max: 6 }).withMessage("otp code must have 6 character length"),
+        body("userId").isUUID().withMessage("Userid should be valid uuid").notEmpty().withMessage("Userid should not be empty")
 
-    const error = validationResult(request)
-    if (!error.isEmpty()) {
-        return response.status(400).json({ error: error.array() })
-    }
+    ],
+    async (request: Request, response: Response) => {
 
-    try {
-        const passwordReset = await UserService.passwordReset(request.body)
-        return response.status(200).json(passwordReset)
-    } catch (error: any) {
-        return response.status(500).json({ success: false, message: "Internal server error!" });
-    }
-})
+        const error = validationResult(request)
+        if (!error.isEmpty()) {
+            return response.status(400).json({ error: error.array() })
+        }
+
+        try {
+            const getVerify = await UserService.otpVerify(request.body)
+            return response.status(200).json(getVerify)
+        } catch (error: any) {
+            return response.status(500).json({ success: false, message: "Internal server error!" });
+        }
+    })
+
+
+userRouter.patch('/reset-password',
+    body('password')
+        .isString().withMessage("Password must be a string")
+        .notEmpty().withMessage("Password should not be empty")
+        .isLength({ min: 6 }).withMessage("Password should have a minimum of 6 characters."),
+    async (request: Request, response: Response) => {
+
+        const error = validationResult(request)
+        if (!error.isEmpty()) {
+            return response.status(400).json({ error: error.array() })
+        }
+
+        try {
+            const passwordReset = await UserService.passwordReset(request.body)
+            return response.status(200).json(passwordReset)
+        } catch (error: any) {
+            return response.status(500).json({ success: false, message: "Internal server error!" });
+        }
+    })
 
 
 

@@ -13,7 +13,7 @@ FarmerRouter.post('/request/', async (request: Request, response: Response) => {
         return response.status(201).json(Farmer)
 
     } catch (error: any) {
-        return response.status(500).json({ success: false, message: 'internal server error!' })
+        return response.status(500).json({ success: false, message: 'Internal server error!' })
     }
 })
 

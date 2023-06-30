@@ -22,7 +22,7 @@ type Success = {
 type User = {
     userName: string,
     password: string,
-    phoneNumber: number,
+    phoneNumber: string,
 }
 
 type resetPassword = {
@@ -33,7 +33,13 @@ type resetPassword = {
 type Session = {
     session_token: string
     id: string,
-    userName: string
+    userName: string,
+    isFarmer: boolean,
+    farmerStatus: {
+        active: boolean,
+        approved: boolean
+    } | null,
+    phoneNumber: string
 }
 
 type otp = {
@@ -53,7 +59,7 @@ type success = {
 
 export const createUser = async (data: User): Promise<Success> => {
     const existingUser = await db.user.findUnique({ where: { userName: data.userName } });
-    const existingNumber = await db.user.findUnique({ where: { phoneNumber: String(data.phoneNumber) } });
+    const existingNumber = await db.user.findUnique({ where: { phoneNumber: data.phoneNumber } });
     const hashPassword = await hash(data.password, 12)
 
     if (existingUser) {
@@ -80,20 +86,22 @@ export const createUser = async (data: User): Promise<Success> => {
 
 export const login = async (data: User): Promise<Session | string> => {
     const { phoneNumber, password } = data;
-    const userData = await db.user.findUnique({ where: { phoneNumber: String(phoneNumber) },include:{Farmer:{select:{active:true}}} });
-    console.log(userData)
+    const userData = await db.user.findUnique({ where: { phoneNumber: phoneNumber }, include: { Farmer: { select: { active: true, approved: true } } } });
     if (userData) {
         const isPasswordValid = await compare(password, userData.password);
 
         if (!isPasswordValid) {
             return "Invalid Password!";
         }
-        
+
         const token = jwt.sign({ userName: userData.userName }, SECRET_KEY);
         const sessionToken: Session = {
             session_token: token,
             id: userData.id,
-            userName: userData.userName
+            userName: userData.userName,
+            phoneNumber: userData.phoneNumber,
+            isFarmer: userData.Farmer === null ? false : true,
+            farmerStatus: userData.Farmer === null ? null : userData.Farmer
         };
 
         return sessionToken;
@@ -105,7 +113,7 @@ export const login = async (data: User): Promise<Session | string> => {
 
 
 
-export const otpSender = async (phoneNumber: string): Promise<otp | string> => {
+export const otpSender = async (phoneNumber: string): Promise<otp | Success> => {
 
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
     const isPhoneNumber = await db.user.findUnique({
@@ -113,7 +121,7 @@ export const otpSender = async (phoneNumber: string): Promise<otp | string> => {
     })
 
     if (!isPhoneNumber) {
-        return "Please enter a valid number"
+        return { success: false, message: 'User not found with this phone number' }
     }
 
     const isOtp = await db.otp.findUnique({
@@ -163,7 +171,7 @@ export const otpSender = async (phoneNumber: string): Promise<otp | string> => {
 }
 
 
-export const otpVerify = async (data: verfiycode): Promise<string | success> => {
+export const otpVerify = async (data: verfiycode): Promise<Success> => {
 
     const { userId, code } = data
     const getOtp = await db.otp.findUnique({
@@ -172,11 +180,11 @@ export const otpVerify = async (data: verfiycode): Promise<string | success> => 
 
 
     if (!getOtp) {
-        return "Failed to verify otp"
+        return { success: false, message: 'We cannot find any user with this userId' }
     }
 
     if (getOtp.code === code) {
-        return db.otp.update({
+        db.otp.update({
             where: { userId },
             data: {
                 verified: true
@@ -186,17 +194,18 @@ export const otpVerify = async (data: verfiycode): Promise<string | success> => 
             }
         })
 
+        return { success: true, message: 'opt verified' }
 
     }
 
-    return { verified: false }
+    return { success: false, message: 'Otp code is wrong' }
 
 
 }
 
 
 
-export const passwordReset = async (data: resetPassword): Promise<Session | string> => {
+export const passwordReset = async (data: resetPassword): Promise<Session | Success> => {
 
     const { id, password } = data
     const hashPassword = await hash(password, 12)
@@ -205,12 +214,13 @@ export const passwordReset = async (data: resetPassword): Promise<Session | stri
     const isOtp = await db.user.findUnique({
         where: { id },
         include: {
-            Otp: { select: { verified: true } }
+            Otp: { select: { verified: true } },
+            Farmer: { select: { active: true, approved: true } }
         }
     })
 
     if (!isOtp?.Otp?.verified) {
-        return "Failed to reset password !"
+        return { success: false, message: "Failed to reset password !" }
     }
 
     const updatePassword = await db.user.update({
@@ -221,7 +231,7 @@ export const passwordReset = async (data: resetPassword): Promise<Session | stri
     })
 
     if (!updatePassword) {
-        return "Failed to reset password !"
+        return { success: false, message: "Failed to reset password !" }
     }
 
     const token = jwt.sign({ userName: isOtp.userName }, SECRET_KEY);
@@ -229,6 +239,9 @@ export const passwordReset = async (data: resetPassword): Promise<Session | stri
         session_token: token,
         id: isOtp.id,
         userName: isOtp.userName,
+        phoneNumber: isOtp.phoneNumber,
+        isFarmer: isOtp.Farmer === null ? false : true,
+        farmerStatus: isOtp.Farmer === null ? null : isOtp.Farmer
     };
 
     return sessionToken;

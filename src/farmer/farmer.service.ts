@@ -57,27 +57,35 @@ export const createFarmerRequest = async (data: any): Promise<Success> => {
     } = data
 
 
-    const Farmer = await db.farmer.create({
-        data: {
-            farmName, profilePicture, pondSize, active: false, approved: false, userId
+    const isFarmer = await db.farmer.findUnique({
+        where: { userId }
+    })
+
+    if (!isFarmer) {
+        const Farmer = await db.farmer.create({
+            data: {
+                farmName, profilePicture, pondSize, active: false, approved: false, userId
+            }
+        })
+
+        const Location = await db.location.create({
+            data: {
+                pradesh, district, nagarpalika, farmerId: Farmer.id, Woda, mahaNagarpalika, upaMahaNagarpalika, gaupalika
+            }
+        })
+
+        const document = await db.document.create({
+            data: { idenfication, registration }
+        })
+
+        if (Farmer && Location && document) {
+            return { success: true, message: 'farmer request send successfully' }
+        } else {
+            return { success: false, message: 'failure to send request' }
         }
-    })
-
-    const Location = await db.location.create({
-        data: {
-            pradesh, district, nagarpalika, farmerId: Farmer.id, Woda, mahaNagarpalika, upaMahaNagarpalika, gaupalika
-        }
-    })
-
-    const document = await db.document.create({
-        data: { idenfication, registration }
-    })
-
-    if (Farmer && Location && document) {
-        return { success: true, message: 'farmer request send successfully' }
-    } else {
-        return { success: false, message: 'failure to send request' }
     }
+
+    return { success: false, message: 'Farmer already exists!' }
 }
 
 export const getFarmer = async (id: string): Promise<Farmer | null> => {
