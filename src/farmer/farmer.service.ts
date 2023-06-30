@@ -20,10 +20,11 @@ type Success = {
 
 
 export const getFarmers = async (): Promise<Farmer[]> => {
-
+    const lastCrusor = 45;
     return db.farmer.findMany({
         where:
             { active: true, approved: true },
+
         include: {
             location:
             {
@@ -193,6 +194,7 @@ export const getFarmerRequests = async (): Promise<Farmer[]> => {
     return db.farmer.findMany({
         where:
             { active: false, approved: false },
+            skip:2,take:1,
         include: {
             location:
             {

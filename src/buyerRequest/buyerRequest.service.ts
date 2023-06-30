@@ -51,7 +51,7 @@ export const approveBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
 
 export const deleteBuyerRequests =async (id:string):Promise<String>=>{
   
-  const deleteBuyerRequests =await  db.buyerRequest.delete({ 
+  const deleteBuyerRequests = await  db.buyerRequest.delete({ 
     where:{
       buyerId:id
     }
