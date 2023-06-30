@@ -13,7 +13,7 @@ buyerDemandRouter.post('/', async (request: Request, response: Response) => {
         return response.status(201).json(buyerDemand)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({success:false,message:"Internal server error"})
     }
 })
 
@@ -22,10 +22,13 @@ buyerDemandRouter.get('/', async (request: Request, response: Response) => {
     const { date, location, fishType } = request.query;
     try {
         const getBuyerDemands = await buyerService.getBuyerDemands(date, location, fishType)
-        return response.status(201).json(getBuyerDemands)
+        if (getBuyerDemands?.length===0){
+            return response.status(200).json({success:true,message:"No data avaible in the database."})   
+        }
+        return response.status(200).json(getBuyerDemands)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 
@@ -35,10 +38,14 @@ buyerDemandRouter.delete('/:id', async (request: Request, response: Response) =>
     const { id } = request.params
     try {
         const deleteBuyerDemand = await buyerService.deleteBuyerDemand(id)
-        return response.status(201).json(deleteBuyerDemand)
+        if (deleteBuyerDemand === null) {
+  return response.status(203).json({success:false,message:`Buyer demand of id ${id } doesnot exits. `})
+        }
+        return response.status(203).json(deleteBuyerDemand)
+      
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: "Internal server error" })
     }
 })
 
@@ -48,10 +55,14 @@ buyerDemandRouter.get('/:id', async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
         const getBuyerDemand = await buyerService.getBuyerDemand(id)
-        return response.status(201).json(getBuyerDemand)
+
+        if (getBuyerDemand.length === 0) {
+            return response.status(404).json({ success: true, message: `There are no demands of buyer ${id}` });
+        }
+        return response.status(200).json(getBuyerDemand);
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' });
     }
 })
 
@@ -60,6 +71,9 @@ buyerDemandRouter.patch('/:id', async (request: Request, response: Response) => 
     const { id } = request.params;
     try {
         const updateBuyerDemand = await buyerService.updateBuyerDemand(request.body, id)
+        if (updateBuyerDemand === null) {
+            return response.status(201).json({ success: false, message: `Buyer demand of id ${id} doesnot exits.` })
+        }
         return response.status(201).json(updateBuyerDemand)
 
     } catch (error: any) {
