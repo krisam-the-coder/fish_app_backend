@@ -60,8 +60,10 @@ farmerSupplyRouter.patch('/:id', async (request: Request, response: Response) =>
 
 // to get all the farmer supply
 farmerSupplyRouter.get('/', async (request: Request, response: Response) => {
+    const { date, location,fishType }  = request.query ;
+
     try {
-        const getFarmerSupplies = await FarmerService.getFarmerSupplies()
+        const getFarmerSupplies = await FarmerService.getFarmerSupplies(date, location, fishType)
         return response.status(201).json(getFarmerSupplies)
 
     } catch (error: any) {
@@ -71,5 +73,15 @@ farmerSupplyRouter.get('/', async (request: Request, response: Response) => {
 
 
 
-// To get all the Buyer Request in Supply
+// filtering on the basis of various entities from dropdown
+
+// farmerSupplyRouter.get('/?', async (request: Request, response: Response) => {
+//     try {
+//         const getFarmerSuppliesFiltering = await FarmerService.getFarmerSuppliesOfFishType(request.body)
+//         return response.status(201).json(getFarmerSuppliesOfFishType)
+
+//     } catch (error: any) {
+//         return response.status(500).json(error.message)
+//     }
+// })
 

@@ -10,6 +10,12 @@ type Farmer = {
     approved: boolean;
 };
 
+type Success = {
+    success: boolean,
+    message: string
+}
+
+
 
 
 
@@ -25,74 +31,97 @@ export const getFarmers = async (): Promise<Farmer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true
+                    nagarpalika: true, Woda: true
                 }
             },
-            Document:{
-                select:{
-                    idenfication:true,registration:true
+            Document: {
+                select: {
+                    idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
     })
 }
 
-export const createFarmerRequest = async (data: any): Promise<Farmer | string> => {
+export const createFarmerRequest = async (data: any): Promise<Success> => {
     const {
         userId, farmName, profilePicture, pondSize, pradesh, district, nagarpalika,
-        Woda,idenfication,registration,mahaNagarpalika,upaMahaNagarpalika,gaupalika
+        Woda, idenfication, registration, mahaNagarpalika, upaMahaNagarpalika, gaupalika
 
     } = data
 
 
-    const Farmer = await db.farmer.create({
-        data: {
-            farmName, profilePicture, pondSize, active: false, approved: false, userId
+    const isFarmer = await db.farmer.findUnique({
+        where: { userId }
+    })
+
+    if (!isFarmer) {
+        const Farmer = await db.farmer.create({
+            data: {
+                farmName, profilePicture, pondSize, active: false, approved: false, userId
+            }
+        })
+
+        const Location = await db.location.create({
+            data: {
+                pradesh, district, nagarpalika, farmerId: Farmer.id, Woda, mahaNagarpalika, upaMahaNagarpalika, gaupalika
+            }
+        })
+
+        const document = await db.document.create({
+            data: { idenfication, registration }
+        })
+
+        if (Farmer && Location && document) {
+            return { success: true, message: 'farmer request send successfully' }
+        } else {
+            return { success: false, message: 'failure to send request' }
         }
-    })
-
-    const Location = await db.location.create({
-        data: {
-            pradesh, district, nagarpalika, farmerId: Farmer.id, Woda, mahaNagarpalika, upaMahaNagarpalika, gaupalika
-        }
-    })
-
-    const document=await db.document.create({
-        data:{idenfication,registration}
-    })
-
-    if (Farmer && Location && document) {
-        return "New Farmer request added Successfully"
-    } else {
-        return "Unable to create Farmer request"
     }
+
+    return { success: false, message: 'Farmer already exists!' }
 }
 
 export const getFarmer = async (id: string): Promise<Farmer | null> => {
 
-    const singleFarmer = db.farmer.findUnique(
-        {
-            where: { id },
-            include: {
-                location:
-                {
-                    select:
-                    {
-                        pradesh: true, district: true, mahaNagarpalika: true,
-                        upaMahaNagarpalika: true, gaupalika: true,
-                        nagarpalika: true
-                    }
+    const singleFarmer = await db.farmer.findUnique({
+        where: { id },
+        include: {
+            location: {
+                select: {
+                    pradesh: true,
+                    district: true,
+                    mahaNagarpalika: true,
+                    upaMahaNagarpalika: true,
+                    gaupalika: true,
+                    nagarpalika: true,
+                    Woda: true,
                 },
-                Document: {
-                    select: {
-                        idenfication: true, registration: true
-                    }
-                }
-            }
-        }
-    )
+            },
+            Document: {
+                select: {
+                    idenfication: true,
+                    registration: true,
+                },
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true,
+                },
+            },
+        },
+    });
+
     return singleFarmer;
-}
+};
+
 
 export const rejectFarmerRequest = async (id: string): Promise<string> => {
     try {
@@ -121,7 +150,7 @@ export const acceptFarmerRequest = async (id: string): Promise<string> => {
             where: {
                 id,
             },
-               data: {
+            data: {
                 approved: true,
                 active: true
             }
@@ -171,12 +200,18 @@ export const getFarmerRequests = async (): Promise<Farmer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true,Woda:true
+                    nagarpalika: true, Woda: true
                 }
             },
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
@@ -184,9 +219,9 @@ export const getFarmerRequests = async (): Promise<Farmer[]> => {
 }
 
 //TO get single farmer request
-export const getSingleFarmerRequest = async (id:string): Promise<Farmer|null> => {
+export const getSingleFarmerRequest = async (id: string): Promise<Farmer | null> => {
 
-  const singleFarmerRequest=await db.farmer.findUnique({
+    const singleFarmerRequest = await db.farmer.findUnique({
         where:
             { id },
         include: {
@@ -196,12 +231,18 @@ export const getSingleFarmerRequest = async (id:string): Promise<Farmer|null> =>
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true,Woda:true
+                    nagarpalika: true, Woda: true
                 }
             },
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }

@@ -9,6 +9,11 @@ type buyer = {
     approved: boolean,
 };
 
+type Success={
+    success:boolean,
+    message:string
+}
+
 
 
 
@@ -24,12 +29,18 @@ export const getBuyers = async (): Promise<buyer[]> => {
                 {
                     pradesh: true, district: true, mahaNagarpalika: true,
                     upaMahaNagarpalika: true, gaupalika: true,
-                    nagarpalika: true
+                    nagarpalika: true,Woda:true
                 }
             },
             Document: {
                 select: {
                     idenfication: true, registration: true
+                }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
                 }
             }
         }
@@ -37,7 +48,7 @@ export const getBuyers = async (): Promise<buyer[]> => {
     return allBuyers;
 }
 
-export const createBuyerRequest = async (data: any): Promise<buyer | string> => {
+export const createBuyerRequest = async (data: any): Promise<Success> => {
     const {
         userId, organizationName, profilePicture,  pradesh, district, nagarpalika,upaMahaNagarpalika,gaupalika,mahaNagarpalika,
         Woda, idenfication, registration
@@ -64,9 +75,9 @@ export const createBuyerRequest = async (data: any): Promise<buyer | string> => 
     })
 
     if (Buyer && Location && Document) {
-        return "New buyer request added Successfully"
+        return {success:true,message:"New buyer is successfully created!"}
     } else {
-        return "Unable to create buyer request"
+        return { success: false, message: "An error occured while creating the buyer." }
     }
 }
 
@@ -82,12 +93,18 @@ export const getBuyer = async (id: string): Promise<buyer | null> => {
                     {
                         pradesh: true, district: true, mahaNagarpalika: true,
                         upaMahaNagarpalika: true, gaupalika: true,
-                        nagarpalika: true
+                        nagarpalika: true,Woda:true
                     }
                 },
                 Document: {
                     select: {
                         idenfication: true, registration: true
+                    }
+                },
+                user: {
+                    select: {
+                        userName: true,
+                        phoneNumber: true
                     }
                 }
             }
@@ -141,6 +158,12 @@ export const getBuyerRequests = async (): Promise<buyer[]> => {
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
             
         }
@@ -149,11 +172,11 @@ export const getBuyerRequests = async (): Promise<buyer[]> => {
     return getBuyerRequests;
 }
 
-export const getSingleBuyerRequest = async (id: string): Promise<buyer | null> => {
-
+export const getSingleBuyerRequest = async (id: string): Promise<buyer | Success> => {
+try{
     const singleBuyerRequest = await db.buyer.findUnique({
         where:
-            { id },
+        { id },
         include: {
             location:
             {
@@ -168,11 +191,25 @@ export const getSingleBuyerRequest = async (id: string): Promise<buyer | null> =
                 select: {
                     idenfication: true, registration: true
                 }
+            },
+            user: {
+                select: {
+                    userName: true,
+                    phoneNumber: true
+                }
             }
         }
-    })
+    }) 
+    if (!singleBuyerRequest) {
+        throw new Error("Buyer request not found.");
+    }
 
-    return singleBuyerRequest;
+    return singleBuyerRequest;;
+} 
+catch(err:any){
+    return {success:false,message:err.message}
+}
+    return { success: false, message:"Falied to get the requested error!"} 
 }
 
 export const acceptBuyerRequest = async (id: string): Promise<string> => {
@@ -203,7 +240,7 @@ export const acceptBuyerRequest = async (id: string): Promise<string> => {
 
 
 
-export const inActivateBuyer = async (id: string): Promise<string> => {
+export const inActivateBuyer = async (id: string): Promise<Success> => {
     const buyer = await db.buyer.findUnique({
         where: { id },
     });
@@ -219,7 +256,7 @@ export const inActivateBuyer = async (id: string): Promise<string> => {
         },
     });
 
-    return updatedBuyer.active ? 'Buyer activated successfully' : 'Buyer inactivated successfully';
+    return updatedBuyer.active ? { success: true, message: 'Buyer activated successfully' } : { success: true, message: 'Buyer inactivated successfully'};
 };
 
 
