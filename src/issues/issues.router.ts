@@ -22,18 +22,25 @@ issueRouter.post("/farmer",
             return response.status(201).json(farmerIssue)
 
         } catch (error: any) {
-            return response.status(500).json(error.message)
+            return response.status(500).json({ success: false, message: 'Internal server error' })
         }
     })
 
     // to create a buyer issue
-issueRouter.post("/buyer", async (request: Request, response: Response) => {
+issueRouter.post("/buyer", [
+    body('buyerId').isString().notEmpty(),
+    body('issue').isString().notEmpty(),
+], async (request: Request, response: Response) => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+        return response.status(400).json({ errors: errors.array() });
+    }
     try {
         const buyerIssue = await issueService.createBuyerIssue(request.body)
         return response.status(201).json(buyerIssue)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -42,10 +49,13 @@ issueRouter.delete("/:id", async (request: Request, response: Response) => {
     const { id } = request.params
     try {
         const deleteIssue = await issueService.deleteIssue(id)
+        if (deleteIssue ===null){
+            return response.status(201).json({success:false,message:`Issue of ID ${id} was not found!`})  
+        }
         return response.status(201).json(deleteIssue)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -54,10 +64,13 @@ issueRouter.patch("/:id", async (request: Request, response: Response) => {
     const { id } = request.params
     try {
         const updateIssue = await issueService.updateIssue(id,request.body)
+        if (updateIssue === null) {
+            return response.status(201).json({ success: false, message: `Issue of ID ${id} was not found!` })  
+        }
         return response.status(201).json(updateIssue)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 

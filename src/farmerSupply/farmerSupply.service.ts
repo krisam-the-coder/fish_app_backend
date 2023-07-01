@@ -11,7 +11,7 @@ type FarmerSupply = {
 
 type Success = {
     success: boolean,
-    messaage: String
+    message: String
 }
 
 
@@ -25,28 +25,43 @@ export const createFarmerSupply = async (data: any): Promise<Success> => {
             fishType, avgFishWeight, totalWeight, yieldDate: new Date(yieldDate), farmerId
         }
     })
-    return { success: true, messaage: "Farmer supply created successfully!" }
+    if(createFarmerSupply){
+            return { success: true, message: "Farmer supply created successfully!" }
+    }
+    else{
+        return { success: false, message: "Farmer supply is not created!" }        
+    }
+
 }
 
-export const deleteFarmerSupply = async (id:string): Promise<string> => {
+export const deleteFarmerSupply = async (id:string): Promise<Success|null> => {
 
-   const deleteSupply=await db.farmerSupply.delete({
+    const isFarmerSupply=await db.farmerSupply.findUnique({
+        where:{id}
+    })
+    if (isFarmerSupply){
+       const deleteSupply=await db.farmerSupply.delete({
      where:{
         id
      }
     })
-    if (deleteSupply){
-         return (" Your farmer Supply is deleted successfully.")
+ 
+        return ({ success:true,message:" Your farmer Supply is deleted successfully."})
     }
-    else{
-        return (" Your farmer Supply is not deleted")
-    }
+   else{
+        return isFarmerSupply
+    }  
    
 }
 
 
-export const updateFarmerSupply = async (data:any,id: string): Promise<FarmerSupply> => {
-    const { fishType, avgFishWeight, totalWeight, yieldDate, farmerId } = data;
+export const updateFarmerSupply = async (data:any,id: string): Promise<FarmerSupply |null> => {
+
+   const { fishType, avgFishWeight, totalWeight, yieldDate, farmerId } = data;  
+    const isFarmerSupply = await db.farmerSupply.findUnique({
+        where: { id }
+    })
+    if(isFarmerSupply){
     const updateFarmerSupply =await db.farmerSupply.update({
      where:{
         id
@@ -55,7 +70,12 @@ export const updateFarmerSupply = async (data:any,id: string): Promise<FarmerSup
          fishType, avgFishWeight, totalWeight, yieldDate: new Date(yieldDate), farmerId 
      }
     })
- return updateFarmerSupply;
+ return updateFarmerSupply; 
+}
+else{
+    return isFarmerSupply;
+}
+   
    
 }
 
@@ -98,10 +118,28 @@ export const getFarmerSupplies = async (date:any, location: any, fishType: any):
 
 
 export const getFarmerSupply= async (id:string): Promise<FarmerSupply[] | null> => {
-    const getFarmerSupply =await db.farmerSupply.findMany({
+
+    const isFarmer=await db.farmer.findUnique({
         where:{
-            farmerId:id
+            id
         }
     })
-    return getFarmerSupply;
+    if(isFarmer){
+           const getFarmerSupply =await db.farmerSupply.findMany({
+        where:{
+            farmerId:id
+        },
+        include:{
+            BuyerRequest:{
+                select:{
+                    id:true
+                }
+            }
+        }
+    })
+
+    return getFarmerSupply; 
+    }
+    else return isFarmer
+
 }

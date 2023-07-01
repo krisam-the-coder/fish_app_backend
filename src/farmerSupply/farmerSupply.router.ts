@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import { body, validationResult } from "express-validator"
 
 import * as FarmerService from "./farmerSupply.service"
+import { getFarmer } from "../farmer/farmer.service"
 
 export const farmerSupplyRouter = express.Router()
 
@@ -14,7 +15,7 @@ farmerSupplyRouter.post('/', async (request: Request, response: Response) => {
         return response.status(201).json(farmerSupply)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -23,10 +24,13 @@ farmerSupplyRouter.delete('/:id', async (request: Request, response: Response) =
     const { id } = request.params
     try {
         const deleteFarmerSupply = await FarmerService.deleteFarmerSupply(id)
+        if(deleteFarmerSupply===null){
+            return response.status(201).json({success:false,message:`Farmer supply with ID ${id} was not found!`})     
+        }
         return response.status(201).json(deleteFarmerSupply)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -36,10 +40,13 @@ farmerSupplyRouter.get('/:id', async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
         const getFarmerSupply = await FarmerService.getFarmerSupply(id)
+        if(getFarmerSupply===null){
+            return response.status(201).json({success:false,message:`Farmer of ID ${id} deost not exits.`})   
+        }
         return response.status(201).json(getFarmerSupply)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -50,10 +57,13 @@ farmerSupplyRouter.patch('/:id', async (request: Request, response: Response) =>
     const { id } = request.params;
     try {
         const updateFarmerSupply = await FarmerService.updateFarmerSupply(request.body,id)
+        if(updateFarmerSupply===null){
+            return response.status(201).json({ success: false, message: `Farmer Supply of ID ${id} deost not exits.` })     
+        }
         return response.status(201).json(updateFarmerSupply)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -64,24 +74,15 @@ farmerSupplyRouter.get('/', async (request: Request, response: Response) => {
 
     try {
         const getFarmerSupplies = await FarmerService.getFarmerSupplies(date, location, fishType)
+        if(getFarmerSupplies.length===0){
+            return response.status(201).json({success:true,message:"There are no farmer supplies."})      
+        }
         return response.status(201).json(getFarmerSupplies)
 
     } catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
 
-
-// filtering on the basis of various entities from dropdown
-
-// farmerSupplyRouter.get('/?', async (request: Request, response: Response) => {
-//     try {
-//         const getFarmerSuppliesFiltering = await FarmerService.getFarmerSuppliesOfFishType(request.body)
-//         return response.status(201).json(getFarmerSuppliesOfFishType)
-
-//     } catch (error: any) {
-//         return response.status(500).json(error.message)
-//     }
-// })
 

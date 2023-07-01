@@ -27,7 +27,7 @@ type buyerIssue={
 
 type Success = {
   success: boolean,
-  messaage: String
+  message: String
 }
 
 
@@ -52,8 +52,13 @@ export const createFarmerIssue = async (data: any): Promise<Success> => {
       }
     }
   });
+if(farmerIssue){
+    return { success: true, message: "Farmer issue created successfully!" }
+}
+else{
+  return { success: false, message: "Farmer issue was not created successfully!" }
+}
 
-  return { success: true, messaage: "Farmer issue created successfully!" }
 }
 
 export const createBuyerIssue = async (data: any): Promise<Success> => {
@@ -77,24 +82,43 @@ export const createBuyerIssue = async (data: any): Promise<Success> => {
       }
     }
   })
-  return { success: true, messaage: "Buyer issue created successfully!" }
+  if (buyerIssue) {
+    return { success: true, message: "Buyer issue created successfully!" }
+  }
+  else {
+    return { success: false, message: "Buyer issue was not created successfully!" }
+  }
 }
 
 
-export const deleteIssue = async (id:string): Promise<string> => {
-  const deleteIssue=await db.issues.delete({
+export const deleteIssue = async (id:string): Promise<Success|null> => {
+  const isIssue = await db.issues.findUnique({
+    where: { id }
+  })
+  if(isIssue){
+    const deleteIssue=await db.issues.delete({
     where:{
       id
     }
   })
-return (" Your issue is deleted successfully! ")
+    return ({ success: true, message: " Your issue is deleted successfully! " })
+  }
+  else {
+    return isIssue
+
+  }
 
 }
 
 
-export const updateIssue = async (id:string,data:any): Promise<string> => {
+export const updateIssue = async (id:string,data:any): Promise<Success|null> => {
   const {issue}=data;
-  const updateIssue =await db.issues.update({
+
+  const isIssue=await db.issues.findUnique({
+    where:{id}
+  })
+  if (isIssue){
+      const updateIssue =await db.issues.update({
     where:{
       id
     },
@@ -102,5 +126,11 @@ export const updateIssue = async (id:string,data:any): Promise<string> => {
       issue
     }
   })
-return (" Your issue is updated successfully! ")
+return ( {success:true, message:" Your issue is updated successfully! "})
+  }
+  else{
+return isIssue
+
+  }
+
 }
