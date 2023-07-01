@@ -21,11 +21,22 @@ const   createBuyerRequest=await db.buyerRequest.create({
       farmerSupplyId, isApproved: false, phoneNumber, buyerId, requestWeight
     }
   })
-  return { success: true, message: "Buyer request is successfully created!" }
+  if(createBuyerRequest)return{ success: true, message: "Buyer request is successfully created!" }
+  else{
+    return { success: false, message: "Buyer request is not created!" }
+  }
 }
 
-export const getBuyerRequests = async (id: string): Promise<BuyerRequest[]> => {
+export const getBuyerRequests = async (id: string): Promise<BuyerRequest[] |null> => {
 
+
+const isFarmerSupply=await db.farmerSupply.findUnique({
+  where:{
+    id
+  }
+})
+
+if(isFarmerSupply){
   const getBuyerRequests = await db.buyerRequest.findMany({
     where: {
       farmerSupplyId: id
@@ -33,11 +44,22 @@ export const getBuyerRequests = async (id: string): Promise<BuyerRequest[]> => {
   })
   return getBuyerRequests
 }
+else{
+  return isFarmerSupply;
+}
+}
 
 
-export const approveBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
-  
-  const approveBuyerRequests=await  db.buyerRequest.update({ 
+
+export const approveBuyerRequests =async (id:string):Promise<BuyerRequest|null>=>{
+
+  const isBuyerRequest = await db.buyerRequest.findUnique({
+    where: {
+       id
+    }
+  })
+  if(isBuyerRequest){
+      const approveBuyerRequests=await  db.buyerRequest.update({ 
     where:{
    id
     },
@@ -47,15 +69,27 @@ export const approveBuyerRequests =async (id:string):Promise<BuyerRequest>=>{
   })
   return approveBuyerRequests;
 }
+return isBuyerRequest;
+  }
 
 
-export const deleteBuyerRequests =async (id:string):Promise<String>=>{
-  
-  const deleteBuyerRequests = await  db.buyerRequest.delete({ 
+
+export const deleteBuyerRequests =async (id:string):Promise<Success |null>=>{
+  const isBuyerRequest = await db.buyerRequest.findUnique({
+    where: {
+      id
+    }
+  })
+  if(isBuyerRequest){
+  const deleteBuyerRequests =await  db.buyerRequest.delete({ 
     where:{
       buyerId:id
     }
   })
-  return "Buyer request deleted!";
+ return {success:true,message:"Your buyer request is successfully deleted."};
+  }
+  return isBuyerRequest;
+
+ 
 }
 

@@ -11,7 +11,7 @@ type BuyerDemand ={
 
 type Success = {
     success: boolean,
-    messaage: String
+    message: string
 }
 
 
@@ -23,46 +23,56 @@ export const createBuyerDemand = async (data: any): Promise<Success> => {
             buyerId, fishType, avgFishWeight, totalWeight, deadline:new Date(deadline)
         }
     })
-    if(createBuyerDemand){ return { success: true, messaage: "Buyer demand is successfully created!" }}
+    if(createBuyerDemand){ return { success: true, message: "Buyer demand is successfully created!" }}
     else{
-        return { success: false, messaage: "An error occured while creating the buyer demand!" }
+        return { success: false, message: "An error occured while creating the buyer demand!" }
 
     }
    
 }
 
-export const deleteBuyerDemand = async (id: string): Promise<string> => {
+export const deleteBuyerDemand = async (id: string): Promise<Success| null> => {
 
-    const deleteDemand = await db.buyerDemand.delete({
+    const isBuyerDemand=await db.buyerDemand.findUnique({
+        where:{
+            id
+        }
+    })
+    if (isBuyerDemand){
+   const deleteDemand = await db.buyerDemand.delete({
         where: {
             id
         }
     })
-    if (deleteDemand) {
-        return (" Your buyer demand is deleted successfully.")
-    }
-    else {
-        return (" Your buyer demand is not deleted")
-    }
-
+  return ({success:true,message:" Your buyer demand is deleted successfully."})
+    }     
+    return isBuyerDemand
 }
 
 
-export const updateBuyerDemand = async (data: any, id: string): Promise<BuyerDemand> => {
+export const updateBuyerDemand = async (data: any, id: string): Promise<Success |null> => {
     const { buyerId, fishType, avgFishWeight, totalWeight, deadline } = data;
-    const updateFarmerSupply = await db.buyerDemand.update({
+
+    const isBuyerDemand = await db.buyerDemand.findUnique({
+        where: {
+            id
+        }
+    })
+    if (isBuyerDemand){
+           const updateFarmerSupply = await db.buyerDemand.update({
         where: {
             id
         },
         data: {
             buyerId, fishType, avgFishWeight, totalWeight, deadline: new Date(deadline)
         }
-    })
-    return updateFarmerSupply;
-
+    })  
+     return ({success:true,message:"Your buyerDemand is updated successfully."});
+    }
+    return isBuyerDemand
 }
 
-export const getBuyerDemand = async (id: string): Promise<BuyerDemand[] | null> => {
+export const getBuyerDemand = async (id: string): Promise<BuyerDemand[]> => {
     const getBuyerDemand = await db.buyerDemand.findMany({
         where: {
            buyerId: id

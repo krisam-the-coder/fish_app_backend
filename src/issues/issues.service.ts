@@ -56,7 +56,7 @@ export const createFarmerIssue = async (data: any): Promise<Success> => {
   return { success: true, messaage: "Farmer issue created successfully!" }
 }
 
-export const createBuyerIssue = async (data: any): Promise<buyerIssue> => {
+export const createBuyerIssue = async (data: any): Promise<Success> => {
   const { buyerId, issue } = data;
 
   const buyerIssue = await db.issues.create({
@@ -77,7 +77,7 @@ export const createBuyerIssue = async (data: any): Promise<buyerIssue> => {
       }
     }
   })
-  return buyerIssue;
+  return { success: true, messaage: "Buyer issue created successfully!" }
 }
 
 

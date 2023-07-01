@@ -13,7 +13,7 @@ buyerRequestRouter.post("/", async(request:Request,response:Response)=>{
         return response.status(200).json(createBuyerRequest)
     }
     catch(error:any){
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -23,10 +23,13 @@ buyerRequestRouter.get("/:id", async(request: Request, response: Response) => {
     const { id } = request.params;
     try {
         const getBuyerRequests = await buyerRequest.getBuyerRequests(id)
+        if(getBuyerRequests===null){
+            return response.status(404).json({success:false,messaage:`Farmer Supply of id ${id} doesn't exist.`})   
+        }
         return response.status(200).json(getBuyerRequests)
     }
     catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -36,10 +39,13 @@ buyerRequestRouter.patch("/:id", async (request: Request, response: Response) =>
     const { id } = request.params;
     try {
         const approveBuyerRequests = await buyerRequest.approveBuyerRequests(id)
+        if(approveBuyerRequests===null){
+            return response.status(200).json({ success: false, messaage: `Buyer Requuest of id ${id} doesn't exist.` })    
+        }
         return response.status(200).json(approveBuyerRequests)
     }
     catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
 
@@ -48,9 +54,12 @@ buyerRequestRouter.delete("/:id", async (request: Request, response: Response) =
     const { id } = request.params;
     try {
         const deleteBuyerRequests = await buyerRequest.deleteBuyerRequests(id)
+        if(deleteBuyerRequests===null){
+            return response.status(200).json({success:false,message:`Buyer request of id ${id} doesn't exist.`})    
+        }
         return response.status(200).json(deleteBuyerRequests)
     }
     catch (error: any) {
-        return response.status(500).json(error.message)
+        return response.status(500).json({ success: false, message: 'Internal server error' })
     }
 })
