@@ -22,7 +22,7 @@ FarmerRouter.post('/request/', async (request: Request, response: Response) => {
 FarmerRouter.get('/', async (request: Request, response: Response) => {
 
     try {
-        const getFarmers = await FarmerService.getFarmers()
+        const getFarmers = await FarmerService.getFarmers(request.pagination)
         return response.status(200).json(getFarmers)
 
     } catch (error: any) {

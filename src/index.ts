@@ -12,6 +12,7 @@ import { buyerDemandRouter } from "./buyerDemand/buyerDemand.router"
 import { buyerRequestRouter } from "./buyerRequest/buyerRequest.router"
 import { farmerRequestRouter } from "./farmerRequest/farmerRequest.router"
 import { issueRouter } from "./issues/issues.router"
+import { paginationMiddleware } from "./middleware/pagination"
 
 dotenv.config()
 
@@ -25,6 +26,8 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+
+app.use(paginationMiddleware); 
 
 
 app.use('/api/user', userRouter)
